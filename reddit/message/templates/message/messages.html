@@ -1,0 +1,17 @@
+{% extends "r/index.html" %}}
+{% load static %}
+{% block content %}
+{% load humanize %}
+{% for message in Messages %}
+<!-- Posts list  -->
+<!-- Voting form -->
+<div class="row">	
+	<div class="col-sm-9" id="post">
+			<a id="post-title" href="{{message.topic}}">{{message.topic}}</a>
+			<p>{{message.body}}</p>
+			<p id="postlist-date"> dodane {{message.date|naturaltime}} przez {{message.author}}</p>
+	</div>			
+</div>
+
+{% endfor %}
+{% endblock %}

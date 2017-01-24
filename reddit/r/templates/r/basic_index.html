@@ -1,0 +1,47 @@
+{% extends "r/index.html" %}}
+{% load static %}
+{% block content %}
+{% load humanize %}
+{% for post in TextPosts %}
+<!-- Posts list  -->
+<!-- Voting form -->
+<div class="row">
+	<div class="col-sm-1" id="ratting-form">
+	{{post.voted}}
+		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
+		{% if post.voted == 'up' %}
+			<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
+		{% else %}
+		<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
+		{% endif %}
+		</form>
+		{{post.rating}}
+		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='down' %}"> {% csrf_token %}
+			<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+		</form>
+	</div>
+<!-- Thumbnail -->
+	<div class="col-sm-2" id="thumbnail">
+	{% if post.image %}
+			<img src="{% static "media/" %}{{post.image}}"/>
+	{% elif post.imgur_image %}
+			<img src="{{post.imgur_image}}"/>
+	{% else %}
+			<a href="{% url 'detailview' word=post.subreddit slug=post.slug %}"><img src="{% static "images/DefaultThumbnail.png" %}"></a>
+	{% endif %}
+	</div>
+<!-- Post title, author, date, subreddit -->	
+	<div class="col-sm-9" id="post">
+		{% if not post.link == None %}
+			<a id="post-title" href="{{post.link}}">{{post.title}}</a>
+		{% else %}
+			<a href="{% url 'detailview' word=post.subreddit slug=post.slug %}">{{post.title}}</a>
+		{% endif %}
+			<p id="postlist-date"> dodane {{post.date|naturaltime}} przez {{post.author}} do
+			<a href="{% url 'category' category=post.subreddit %}">/r/{{post.subreddit}}</a></p>
+			<p id="under-post"><a href="{% url 'detailview' word=post.subreddit slug=post.slug %}">komentarzy</a>  <a href="#">podziel się</a>  <a href="#">zapisz</a> </p>
+	</div>			
+</div>
+
+{% endfor %}
+{% endblock %}

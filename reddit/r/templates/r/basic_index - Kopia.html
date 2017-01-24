@@ -1,0 +1,29 @@
+{% extends "r/index.html" %}}
+{% load static %}
+{% block content %}
+{% load humanize %}
+{% for post in TextPosts %}
+<!-- Posts list  -->
+<div class="row">
+	<div class="col-lg-2"
+		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
+			<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
+		</form>
+		{{post.rating}}
+		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='down' %}"> {% csrf_token %}
+			<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+		</form>
+	</div>
+	<div class="col-lg-10">
+		{% if not post.link == None %}
+			<a href="{{post.link}}">{{post.title}}</a>
+		{% else %}
+			<a href="{% url 'detailview' word=post.subreddit slug=post.slug %}">{{post.title}}</a>
+		{% endif %}
+			<p id="postlist-date"> dodane {{post.date|naturaltime}} przez {{post.author}} do
+			<a href="{% url 'detailview' word=post.subreddit slug=post.slug %}">/r/{{post.subreddit}}</a></p>
+			<p id="under-post"><a href="{% url 'detailview' word=post.subreddit slug=post.slug %}">komentarzy</a>  <a href="#">podziel się</a>  <a href="#">zapisz</a> </p>
+	</div>			
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'r/index.html' %}
+{% block content %}
+{% load humanize %}
+{% load crispy_forms_tags %}
+<div class="container">
+{{TextPost.vote_status}}
+	<div class='row'>
+     	<h1>{{TextPost.title}}{{LinkPosts.title}}</h1>
+    </div> 
+    <div class='row'>
+    	<p>{{TextPost.body}}</p>
+    </div>
+    <p>{{TextPost.subreddit}}</p>
+    <footer>{{TextPost.date|naturaltime}}</footer>
+   		 <form method="POST" action="{% url 'detailview' word=TextPost.subreddit slug=TextPost.slug %}">
+         {% csrf_token %}
+         {{form|crispy}}
+         <input type="submit" class="btn btn-default" value="save" </input>
+         </form>
+         
+       {% for comment in comments %}  
+       <div class="row">
+       <h3>{{comment.author}}</h3>
+       {{comment.body}}
+       </div>
+       {% endfor %}
+        
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "r/index.html" %}}
+{% load static %}
+{% block content %}
+{% load humanize %}
+{% for mention in Mentions %}
+<!-- Posts list  -->
+<!-- Voting form -->
+<div class="row">	
+	<div class="col-sm-9" id="post">
+			<a id="post-title" href="{{mention.thread}}">{{message.thread}}</a>
+			<p> {{mention.body}} </p>
+			<p id="postlist-date"> dodane {{mention.date|naturaltime}} przez {{mention.author}}
+	</div>			
+</div>
+
+{% endfor %}
+{% endblock %}

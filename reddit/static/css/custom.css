@@ -1,0 +1,159 @@
+#top-navbar{
+    background-color: #d7dadf;
+    font-size: 10px;
+    font-family: Verdana;
+    height: 5px;
+    padding-top: 0!important;
+    padding-bottom: 0!important;
+    min-height: 17px !important;
+    padding-right:800px;
+}
+
+.navbar  a {
+    color: #0f0f0f;
+    padding-bottom: 30px;
+}
+
+.navbar > .nav-tabs > li{
+    height: 10px;
+}
+#lower-navbar{
+    color: #0f0f0f !important;
+    background-color: #8fc4ee;
+    margin-top: -20px;
+    height: 30px;
+    font-family: Verdana;
+    padding-top: 23px;
+    border-top: 0;
+    border-bottom: 0;
+    padding-right: 500px;
+}
+
+.navbar > .navbar-brand{
+    padding-top: 0 !important;
+    padding-bottom: -10px !important;
+}
+
+#top-tabs > li> a{
+    padding-bottom: 0.5px;
+    padding-top: 0.5px;
+}
+
+#lower-tabs > li> a{
+    padding-bottom: 3px;
+    padding-top: 3px;
+}
+
+.nav-tabs > li > a:hover {
+    background-color: #303136 !important;
+    border:0;
+}
+
+#top-tabs> li > a:active{
+    color: crimson !important;
+    border-bottom: 0;
+}
+
+#lower-tabs > li > a:active{
+    color: crimson !important;
+}
+
+
+.container ::before{
+    content:none;
+}
+
+
+#footer {
+ clear: both;
+ position: relative;
+ z-index: 10;
+ height: 3em;
+ margin-bottom: 15em;
+ padding-left: 15%;
+ padding-right: 15%;
+
+}
+
+#footer ul {
+    float: left;
+    display: block;
+    list-style-type: none;
+}
+
+#posts-list {
+    font-family: Verdana;
+    padding-bottom:25px;
+    font-size: medium;
+
+}
+
+#posts-list > a {
+    color: #0000ff !important;
+}
+
+#postlist-date {
+    font-size: x-small;
+    padding-bottom: 0;
+}
+
+#under-post{
+    font-size: small;
+    color: #888;
+}
+
+#new-posts{
+    float:right;
+}
+
+#create-posts > .btn {
+    margin-top: 10px;
+}
+
+#search-form{
+    float:right;
+}
+
+#vote-post{
+	display: inline-block;
+}
+
+#posts-list{
+	display: inline-block;
+}
+
+#posts-list a {
+	float:left;
+}
+
+#wut {
+	float:right;
+}
+
+#new-text-post {
+	float:right;
+}
+
+#post{
+	margin-top: 33px;
+	color: #0000ff;
+}
+
+#post-title{
+	font-size: medium;
+	color: #0000ff;
+}
+
+#thumbnail {
+	margin-top: 37px;
+	padding-left:55px;
+}
+
+#ratting-form {
+	margin-top: 20px;
+	padding-left:33px;
+}
+
+.list-group-item {
+    display: list-item;
+}

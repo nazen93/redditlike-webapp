@@ -1,0 +1,175 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>reddit super stronka kurwo</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Bootstrap CSS theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <!-- Custom CSS styling -->
+    <link rel='stylesheet' type='text/css' href="{% static 'css/custom.css' %}">
+</head>
+
+<!-- page header -->
+<!-- top navbar -->
+<div class="navbar navbar-static-top" id="top-navbar">
+    <div class="container">
+        <div class="row">
+            <ul class="nav nav-pills" id="top-tabs">
+                <li class="active"><a href="#">Front</a></li>
+                <li><a href="#">All</a></li>
+                <li><a href="#">Random</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!--lower navbar -->
+<div class="navbar sub-navbar" id="lower-navbar">
+   <a href="{% url 'index' %}" class="navbar-brand">reddit</a>
+   <div class="container">
+       <div class="row">
+            <ul class="nav nav-tabs" id="lower-tabs">
+                <li class="active"><a href="#">hit</a></li>
+                <li><a href="#">new</a></li>
+                <li><a href="#">rising</a></li>
+                <li><a href="#">controversial</a></li>
+                <li><a href="#">top</a></li>
+                <li><a href="#">gilded</a></li>
+                <li><a href="#">wiki</a></li>
+                <li><a href="#">promoted</a></li>
+                <!-- Register form modal -->
+                {% if not user.is_authenticated %}
+                               
+                <div class="container">
+                <a href="" data-toggle="modal" data-target="#modal-1">register plz )) </a>
+	                <div class="modal" id="modal-1">
+	                	<div class="modal-dialog">
+	                		<div class="modal-content">
+	                			<div class="modal-header">
+	                				<button type="button" class="close" data-dismiss="modal">&times;</button>
+	                				<h3 class="modal-title">lul</h3>
+	                			<div class="modal-body">
+	                				<form method="POST" action="{% url 'login' %}">{% csrf_token %}
+		                				{{login_form|crispy}}
+		                				<button type="submit" id="search-button" class="btn btn-default">submit</button>
+		                				<input type="hidden" name="next" value="{{  request.GET.next }}" />
+	                				</form>        		
+	                			</div>
+	                			</div>
+	                		</div>
+	                	</div>
+	                </div>
+	                </div>
+	              {% endif %}
+            </ul>
+        </div>
+   </div>
+</div>
+<!-- Body content -->
+<div class="container">
+	<div class="row">
+    	<div class="col-sm-6">
+          		{% block content %}
+	            {% endblock %}
+    	</div>
+    	<!-- Search form -->
+		<div class="col-sm-6 other">
+      	        <form id="custom-search-form" class="form-search form-horizontal pull-right" method='GET' action="{% url 'index' %}">
+					{{search_form|crispy}}
+					<div class="col-lg-2">
+		           	<button type="submit" id="search-button" class="btn btn-default">submit</button>
+	            </form>
+		        <div class="row">   
+		    		<div class="col-sm-12">
+		    		    	<div class="btn-group-vertical" role="group" aria-label="..." id="create-posts">
+				            	<a class="btn btn-default" href="{% url 'new_link_post' %}" role="button">Dodaj nowy link</a>
+				            	<a class="btn btn-default" href="{% url 'new_text_post' %}" role="button">Dodaj nowy post tekstowy</a>
+		    				</div>  
+		    		</div>      
+	    		</div>
+  		</div>
+	</div>
+</div>	
+<!-- Footer -->
+<div id="footer">
+    <div class="container" id="footer">
+        <div class="row">
+            <ul>
+                <li><b>about</b></li>
+                <li><a href="#">blog</a></li>
+                <li><a href="#">source code</a></li>
+                <li><a href="#">advertise</a></li>
+                <li><a href="#">jobs</a></li>
+            </ul>
+            <ul>
+                <li><b>help</b></li>
+                <li><a href="#">site rules</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">wiki</a></li>
+                <li><a href="#">reddiquette</a></li>
+                <li><a href="#">transparency</a></li>
+                <li><a href="#">contact us</a></li>
+            </ul>
+            <ul>
+                <li><b>apps & tools</b></li>
+                <li><a href="#">Reddit for iPhone</a></li>
+                <li><a href="#">Reddit for Android</a></li>
+                <li><a href="#">mobile website</a></li>
+                <li><a href="#">buttons</a></li>
+            </ul>
+            <ul>
+                <li><b><3</b></li>
+                <li><a href="#">reddit gold</a></li>
+                <li><a href="#">redditgifts</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Simpiled and minified JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script type="text/javascript">
+$(function(){
+	
+	$('#search-button').keyup(function(){
+			
+			$.ajax({
+				type:'GET',
+				url:'/create/',
+				data:{
+					search_data:$('#search').val()
+					csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+				},
+				sucess:searchSuccess,				
+				dataTyoe: 'html'				
+			})							
+	});
+}
+function searchSuccess(data, textStatus, jqXHR)
+{
+$('#search-results').html(data);
+}
+
+<script type="text/javascript">
+$(document).on('submit'),'#new-text-post', function(e){
+	e.preventDefault();
+	
+	$.ajax({
+		type:'POST',
+		url:'/addpost/',
+		data:{}
+	})
+	
+	
+	}
+
+
+</script>
+
+</body>
+</html>

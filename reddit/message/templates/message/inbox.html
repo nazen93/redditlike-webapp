@@ -1,0 +1,24 @@
+{% extends "r/index.html" %}}
+{% load static %}
+{% block content %}
+{% load humanize %}
+{% for message in inbox %}
+<!-- Posts list  -->
+<!-- Voting form -->
+<div class="row">	
+	<div class="col-sm-9" id="post">
+			{% if title %}
+			<a id="post-title" href="{{message.topic}}">{{message.title}}</a>
+			{% elif topic %}
+			<a>{{message.topic}}</a>
+			{% else %}
+			<a>{{message.thread}}</a>
+			{% endif %}
+			<p> {{message.body}} </p>
+			<p id="postlist-date"> dodane {{message.date|naturaltime}} przez {{message.author}}
+
+	</div>			
+</div>
+
+{% endfor %}
+{% endblock %}
