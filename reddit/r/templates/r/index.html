@@ -17,7 +17,7 @@
 <!-- page header -->
 <!-- top navbar -->
 <div class="navbar navbar-static-top" id="top-navbar">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <ul class="nav nav-pills" id="top-tabs">
                 <li class="active"><a href="#">Front</a></li>
@@ -30,8 +30,8 @@
 <!--lower navbar -->
 <div class="navbar sub-navbar" id="lower-navbar">
    <a href="{% url 'index' %}" class="navbar-brand">reddit</a>
-   <div class="container">
-       <div class="row">
+   <div class="container-fluid">
+   	<div class="row">
             <ul class="nav nav-tabs" id="lower-tabs">
                 <li class="active"><a href="#">hit</a></li>
                 <li><a href="#">new</a></li>
@@ -44,29 +44,46 @@
                 <!-- Register form modal -->
                 {% if not user.is_authenticated %}
                                
-                <div class="container">
+                <div class="container-fluid">
                 <a href="" data-toggle="modal" data-target="#modal-1">register plz )) </a>
-	                <div class="modal" id="modal-1">
-	                	<div class="modal-dialog">
+	                <div class="modal fade bs-example-modal-lg" id="modal-1">
+	                	<div class="modal-dialog modal-lg">
 	                		<div class="modal-content">
 	                			<div class="modal-header">
 	                				<button type="button" class="close" data-dismiss="modal">&times;</button>
-	                				<h3 class="modal-title">lul</h3>
+	                					<div class="row">
+	                						<div class="col-lg-6">
+	                							<h3 class="text-center">Register a new account</h3>
+	                						</div>
+	                						<div class="col-lg-6">
+	                							<h3 class="text-center">Log in</h3>
+	                						</div>
+	                					</div>
 	                			<div class="modal-body">
-	                				<form method="POST" action="{% url 'login' %}">{% csrf_token %}
-		                				{{login_form|crispy}}
-		                				<button type="submit" id="search-button" class="btn btn-default">submit</button>
-		                				<input type="hidden" name="next" value="{{  request.GET.next }}" />
-	                				</form>        		
+	                				<div class="row">
+	                					<div class="col-sm-6" id="modal-border">
+	                						<form method="POST" action="{% url 'register' %}">{% csrf_token %}
+				                				{{register_form|crispy}}
+				                				<button type="submit" id="register-button" class="btn btn-default">Register</button>	                				
+	                						</form>
+		                				</div>	
+	                					<div class="col-sm-6">
+		                					<form method="POST" action="{% url 'login' %}">{% csrf_token %}
+				                				{{login_form|crispy}}
+				                				<button type="submit" id="search-button" class="btn btn-default">Log in</button>
+				                				<input type="hidden" name="next" value="{{  request.GET.next }}" />
+		                					</form>  
+	                					</div>
+	                				</div>    		
 	                			</div>
 	                			</div>
 	                		</div>
 	                	</div>
 	                </div>
-	                </div>
+	            </div>
 	            {% endif %}
 	            {% if user.is_authenticated %}
-	            <a href="{% url 'logout' %}">Logout</a>            
+	            <a id="poooooost" href="{% url 'logout' %}">Logout</a>            
 	            {% endif %}
 	            
             </ul>
@@ -74,27 +91,49 @@
    </div>
 </div>
 <!-- Body content -->
-<div class="container">
+<div class="container" id="kek">
 	<div class="row">
-    	<div class="col-sm-6" id="body-content">
+    	<div class="col-lg-6" id="body-content">
           		{% block content %}
 	            {% endblock %}
     	</div>
     	<!-- Search form -->
-		<div class="col-sm-6 other">
-      	        <form id="custom-search-form" class="form-search form-horizontal pull-right" method='GET' action="{% url 'index' %}">
-					{{search_form|crispy}}
-					<div class="col-lg-2">
-		           	<button type="submit" id="search-button" class="btn btn-default">submit</button>
-	            </form>
-		        <div class="row">   
-		    		<div class="col-sm-12">
-		    		    	<div class="btn-group-vertical" role="group" aria-label="..." id="create-posts">
-				            	<a class="btn btn-default" href="{% url 'new_link_post' %}" role="button">Dodaj nowy link</a>
-				            	<a class="btn btn-default" href="{% url 'new_text_post' %}" role="button">Dodaj nowy post tekstowy</a>
-		    				</div>  
-		    		</div>      
-	    		</div>
+		<div class="col-lg-6 other">
+			<div class="row">
+				<div class="col-lg-12">
+	      	        <form id="custom-search-form" class="form-search form-horizontal pull-right" method='GET' action="{% url 'index' %}">
+						{{search_form|crispy}}
+			           	<button type="submit" id="search-button" class="btn btn-default">submit</button>
+		            </form>
+	            </div>
+	        </div>
+	        {% if not user.is_authenticated %}
+	        <div class="row">	        	
+	        	<div class="col-lg-12">
+	        		<div class="panel panel-primary">
+		        		<form method="POST" action="{% url 'login' %}">{% csrf_token %}
+					    	{% for field in login_form %}
+					    	{{field.label}}
+					    	{{field}}
+					    	{% endfor %}
+					    	<div class="row">
+					    	<div class="col-lg-12">
+					        <button type="submit" id="search-button" class="btn btn-default">Log in</button>
+					        </div>
+					        </div>
+					    </form>   
+					    </div>
+				    </div>
+				    </div> 
+	        {% endif %}
+		    <div class="row">
+		    	<div class="col-lg-12">   
+		    		<div class="btn-group-vertical" role="group" aria-label="..." id="create-posts">
+				     	<a class="btn btn-default" href="{% url 'new_link_post' %}" role="button">Dodaj nowy link</a>
+				        <a class="btn btn-default" href="{% url 'new_text_post' %}" role="button">Dodaj nowy post tekstowy</a>
+		    		</div>  
+		    	</div>      
+	    	</div>
   		</div>
 	</div>
 </div>	

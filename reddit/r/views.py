@@ -11,7 +11,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.utils.http import is_safe_url
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import SubForum, PostText, UserProfile, Voter, Comments
-from .forms import SearchForm, SignUpForm, VotingForm, CommentForm
+from .forms import SearchForm, SignUpForm, VotingForm, CommentForm, MyAuthenticationForm
 from .mixins import NewPostSuccessURLMixin, GetAuthorMixin, SearchFormMixin, LoginRequiredMixin, PreviousPageMixin, AlreadyLoggedin
 from io import StringIO
 from PIL import Image

@@ -1,8 +1,10 @@
 from django import forms
 from django.forms import ModelForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.db.models.fields import CharField
 from .models import Comments
+
 
 class SearchForm(forms.Form):
     search = forms.CharField(max_length=100)
@@ -25,3 +27,7 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comments
         fields = ['body']
+
+class MyAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'size': 13}))    
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'size': 13}))

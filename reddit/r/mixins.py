@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.utils.decorators import method_decorator
-from .forms import SearchForm, VotingForm
+from .forms import SearchForm, VotingForm, SignUpForm, MyAuthenticationForm
 from .models import PostText, Voter, UserProfile
 from django.shortcuts import get_object_or_404
 
@@ -31,7 +31,8 @@ class SearchFormMixin:
     def get_context_data(self, *args, **kwargs):
         context = super(SearchFormMixin, self).get_context_data(**kwargs)
         context['search_form'] = SearchForm
-        context['login_form'] = AuthenticationForm
+        context['login_form'] = MyAuthenticationForm
+        context['register_form'] = SignUpForm
         return context
     
 class LoginRequiredMixin:

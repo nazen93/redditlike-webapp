@@ -157,3 +157,20 @@
 .list-group-item {
     display: list-item;
 }
+
+#modal-border {
+	border-right: 1px solid #DCDCDC;	
+}
+
+#create-posts {
+	float: right;
+}
+
+#poooooost > a {
+	float: right;	
+}
+
+#input{
+	width: 30px;
+}
+
