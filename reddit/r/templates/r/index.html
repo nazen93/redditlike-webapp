@@ -91,14 +91,14 @@
    </div>
 </div>
 <!-- Body content -->
-<div class="container" id="kek">
+<div class="container-fluid" id="body-container">
 	<div class="row">
-    	<div class="col-lg-6" id="body-content">
+    	<div class="col-lg-10" id="body-content">
           		{% block content %}
 	            {% endblock %}
     	</div>
     	<!-- Search form -->
-		<div class="col-lg-6 other">
+		<div class="col-lg-2 other">
 			<div class="row">
 				<div class="col-lg-12">
 	      	        <form id="custom-search-form" class="form-search form-horizontal pull-right" method='GET' action="{% url 'index' %}">
@@ -113,7 +113,6 @@
 	        		<div class="panel panel-primary">
 		        		<form method="POST" action="{% url 'login' %}">{% csrf_token %}
 					    	{% for field in login_form %}
-					    	{{field.label}}
 					    	{{field}}
 					    	{% endfor %}
 					    	<div class="row">

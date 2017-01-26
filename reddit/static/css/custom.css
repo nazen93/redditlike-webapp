@@ -19,7 +19,7 @@
 }
 #lower-navbar{
     color: #0f0f0f !important;
-    background-color: #8fc4ee;
+    background-color: #369;
     margin-top: -20px;
     height: 30px;
     font-family: Verdana;
@@ -174,3 +174,6 @@
 	width: 30px;
 }
 
+#body-container {
+    padding: 15px;
+}
