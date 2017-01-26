@@ -23,15 +23,9 @@
     margin-top: -20px;
     height: 30px;
     font-family: Verdana;
-    padding-top: 23px;
     border-top: 0;
     border-bottom: 0;
-    padding-right: 500px;
-}
 
-.navbar > .navbar-brand{
-    padding-top: 0 !important;
-    padding-bottom: -10px !important;
 }
 
 #top-tabs > li> a{
@@ -43,6 +37,11 @@
     padding-bottom: 3px;
     padding-top: 3px;
 }
+
+#lower-tabs{
+	margin-top: 23px;
+}
+
 
 .nav-tabs > li > a:hover {
     background-color: #303136 !important;
@@ -58,11 +57,17 @@
     color: crimson !important;
 }
 
-
 .container ::before{
     content:none;
 }
 
+#lower-navbar > navbar  ::after{
+	content:none;
+}
+
+.row ::afer{
+	content:none;
+}
 
 #footer {
  clear: both;
@@ -166,9 +171,6 @@
 	float: right;
 }
 
-#poooooost > a {
-	float: right;	
-}
 
 #input{
 	width: 30px;
@@ -176,4 +178,17 @@
 
 #body-container {
     padding: 15px;
+}
+
+#login-panel {
+	height: 75px;
+}
+
+#login-button {
+	margin-top: 20px;
+	padding: 1px 20px;
+}
+
+.panel {
+	border-color: #000;
 }

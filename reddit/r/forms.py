@@ -7,7 +7,7 @@ from .models import Comments
 
 
 class SearchForm(forms.Form):
-    search = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
+    search = forms.CharField(max_length=100, label='', widget=forms.TextInput(attrs={
         'size': 26,
         'placeholder': 'search'
         }))
@@ -22,7 +22,6 @@ class SignUpForm(forms.ModelForm):
             'password' : forms.PasswordInput(),
             'password' : forms.PasswordInput()
             } 
-        help_texts = {'username': 'Username'}
 
 class VotingForm(forms.Form):
     Vote = forms.BooleanField(required=False)
