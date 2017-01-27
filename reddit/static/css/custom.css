@@ -1,5 +1,5 @@
 #top-navbar{
-    background-color: #d7dadf;
+    background-color: #f0f0f0;
     font-size: 10px;
     font-family: Verdana;
     height: 5px;
@@ -19,13 +19,19 @@
 }
 #lower-navbar{
     color: #0f0f0f !important;
-    background-color: #c0ddf7;
+    background-color: #cee2f8;
     margin-top: -20px;
     height: 30px;
     font-family: Verdana;
-    border-top: 0;
-    border-bottom: 0;
+    border-top: 1px;
+    border-bottom: 1px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-color: #5F99CF !important;
 
+}
+.navbar > .container-fluid{
+	padding-right: 0;
 }
 
 #top-tabs > li> a{
@@ -33,9 +39,15 @@
     padding-top: 0.5px;
 }
 
-#lower-tabs > li> a{
-    padding-bottom: 3px;
-    padding-top: 3px;
+#lower-tabs > li {
+	height: 15px;
+	margin-top: 7px;
+}
+
+#lower-tabs > li  a{
+    padding-bottom: 0;
+    padding-top: 0;
+    
 }
 
 #lower-tabs{
@@ -44,8 +56,7 @@
 
 
 .nav-tabs > li > a:hover {
-    background-color: #303136 !important;
-    border:0;
+
 }
 
 #top-tabs> li > a:active{
@@ -63,6 +74,10 @@
 
 #lower-navbar > navbar  ::after{
 	content:none;
+}
+
+#custom-search-form {
+	margin-bottom: 10px;
 }
 
 #logged-in-panel {
@@ -117,7 +132,7 @@
 }
 
 #search-form{
-    float:right;
+    float: right;
 }
 
 #vote-post{
@@ -169,6 +184,8 @@
 }
 
 #create-posts {
+	font-family: Verdana;
+	width: 300px;
 	float: right;
 }
 
@@ -178,18 +195,49 @@
 }
 
 #body-container {
-    padding: 15px;
+    padding: 5px 15px 15px 15px;
 }
 
 #login-panel {
 	height: 75px;
+	width: 300px;
+}
+
+#login-form {
+	margin-top: 5px;
+	font-size: x-small;
+	font-family: Verdana;
+}
+
+#modal-login-form{
+	font-size: x-small;
+	font-family: Verdana;
+	width: 250px;
+}
+
+#register-form{
+	font-size: x-small;
+	font-family: Verdana;
+	width: 250px;
 }
 
 #login-button {
-	margin-top: 20px;
-	padding: 1px 20px;
+	margin-top: 18px;
+	padding: 1px 4px;
 }
 
 .panel {
 	border-color: #000;
+}
+
+#right-side-column{
+	padding-right: 2px;
+}
+
+#want-to-join{
+	margin-right: 0;
+	margin-top: 5px;
+	font-family: Verdana;
+	font-size: x-small;
+	background-color: #eff7ff;
 }
