@@ -19,7 +19,7 @@
 }
 #lower-navbar{
     color: #0f0f0f !important;
-    background-color: #369;
+    background-color: #c0ddf7;
     margin-top: -20px;
     height: 30px;
     font-family: Verdana;
@@ -65,8 +65,9 @@
 	content:none;
 }
 
-.row ::afer{
-	content:none;
+#logged-in-panel {
+	margin-top: 7px;
+	background-color: #eaf4fc;
 }
 
 #footer {
