@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.utils.decorators import method_decorator
 from .forms import SearchForm, VotingForm, SignUpForm, MyAuthenticationForm, ModalAutenticationForm
-from .models import PostText, Voter, UserProfile
+from .models import PostText, Voter, UserProfile, Comments
 from django.shortcuts import get_object_or_404
 
 class GetAuthorMixin:
@@ -16,6 +16,7 @@ class GetAuthorMixin:
         form.instance.author = self.request.user
         return super(GetAuthorMixin, self).form_valid(form)
     
+    
 class NewPostSuccessURLMixin:
     
     """
@@ -23,6 +24,7 @@ class NewPostSuccessURLMixin:
     """
     def get_success_url(self):
         return reverse('detailview', args=(self.object.subreddit, self.object.slug))
+    
     
 class SearchFormMixin:
     """
@@ -36,6 +38,7 @@ class SearchFormMixin:
         context['register_form'] = SignUpForm
         return context
     
+    
 class LoginRequiredMixin:
     """
     Restricts access to not logged in users
@@ -43,6 +46,7 @@ class LoginRequiredMixin:
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)
+    
 
 class PreviousPageMixin:
     """
@@ -50,6 +54,7 @@ class PreviousPageMixin:
     """            
     def get_success_url(self):
         return self.request.META.get('HTTP_REFERER','/')
+    
     
 class AlreadyLoggedin:
     

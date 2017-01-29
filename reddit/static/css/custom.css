@@ -64,13 +64,6 @@
     border-bottom: 0;
 }
 
-#lower-tabs > li > a:active{
-    color: crimson !important;
-}
-
-.container ::before{
-    content:none;
-}
 
 #lower-navbar > navbar  ::after{
 	content:none;
@@ -78,11 +71,6 @@
 
 #custom-search-form {
 	margin-bottom: 10px;
-}
-
-#logged-in-panel {
-	margin-top: 7px;
-	background-color: #eaf4fc;
 }
 
 #footer {
@@ -156,23 +144,52 @@
 }
 
 #post{
-	margin-top: 33px;
+	margin-top: 15px;
+	padding-left: 0;
 	color: #0000ff;
 }
 
-#post-title{
+#postlist-title{
 	font-size: medium;
 	color: #0000ff;
 }
 
+#postlist-details{
+	font-size: x-small;
+	color: #888;
+	margin-bottom: 0;
+}
+
+#postlist-details > a{
+	font-size: x-small;
+	color: #888;
+}
+
+#under-post > a {
+	font-size: x-small;
+	font-weight: bold;
+	color: #888;
+
+}
+
 #thumbnail {
-	margin-top: 37px;
-	padding-left:55px;
+	margin-top: 15px;
+	padding-right: 0;
+	padding-left: 0;
+	text-align: center;
 }
 
 #ratting-form {
-	margin-top: 20px;
-	padding-left:33px;
+	margin-top: 15px;
+	padding-left: 10px;
+	padding-right: 0;
+	margin-right: 0;
+	text-align: right;
+	}
+
+#ratting-form > p {
+	margin-right: 5px;
+	margin-bottom: 3px;
 }
 
 .list-group-item {
@@ -240,4 +257,39 @@
 	font-family: Verdana;
 	font-size: x-small;
 	background-color: #eff7ff;
+}
+
+.modal-footer {
+	border: 0;
+}
+
+.modal-footer > p {
+	font-size: x-small;
+	font-family: Verdana;
+	margin-top: 15px;
+}
+
+#modal-button{
+	float: right;
+	margin-top: 30px;
+	margin-right: 83px;
+}
+
+#logged-in-panel {
+	margin-top: 10px;
+	background-color: #eaf4fc;
+	padding-left: 5px;
+}
+
+#logged-in-panel > li {
+	color: #369;
+	font-size: x-small;
+	font-family: Verdana;
+}
+
+#logged-in-panel > li > a {
+	color: #369;
+	font-size: small;
+	font-family: Verdana;
+	padding-bottom: 0;
 }

@@ -18,6 +18,7 @@ class SubForum(models.Model):
 
     def __str__(self):
         return self.name
+    
 
 class PostText(ImgurThumbnail, models.Model):
     title = models.CharField(max_length=200)
@@ -29,6 +30,7 @@ class PostText(ImgurThumbnail, models.Model):
     rating = models.IntegerField(default=0, editable=False)
     author = models.ForeignKey(User, null=True, editable=False)
     voted = models.ForeignKey('Voter', null=True)
+    comments_count = models.IntegerField(default=0, editable=False)
     subreddit = models.ForeignKey(SubForum)        
 
     def save(self, *args, **kwargs):
@@ -53,6 +55,7 @@ class PostText(ImgurThumbnail, models.Model):
 
     def __str__(self):
         return self.title
+    
 
 class Comments(models.Model):
     thread = models.ForeignKey(PostText, related_name='comments')
@@ -62,14 +65,15 @@ class Comments(models.Model):
 
     def __str__(self):
         return str(self.thread)
+    
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     posts = models.ForeignKey(PostText, null=True)
-
     
     def __str__(self):
         return str(self.user)
+    
 
 class Voter(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

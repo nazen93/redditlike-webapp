@@ -12,6 +12,7 @@ class SearchForm(forms.Form):
         'placeholder': 'search'
         }))
     
+    
 class SignUpForm(forms.ModelForm):
     password2 = forms.CharField(label='', widget=forms.PasswordInput(attrs={
         'id': 'register-form',
@@ -55,6 +56,7 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comments
         fields = ['body']
+        
 
 class MyAuthenticationForm(AuthenticationForm):
     username = forms.CharField(label='', widget=forms.TextInput(attrs={
@@ -66,16 +68,11 @@ class MyAuthenticationForm(AuthenticationForm):
         'placeholder':'password'
     }))
     
+  
 class ModalAutenticationForm(MyAuthenticationForm):
 
     def __init__(self, *args, **kwargs):
         super(ModalAutenticationForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs = {
-        'id': 'modal-login-form',
-        'placeholder': 'username'
-        }
-        self.fields['password'].widget.attrs = {
-        'id': 'modal-login-form',
-        'placeholder': 'password'
-        }
+        self.fields['username'].widget.attrs['id'] = 'modal-login-form'        
+        self.fields['password'].widget.attrs['id'] = 'modal-login-form'
    

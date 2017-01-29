@@ -71,6 +71,7 @@ class PostView(PreviousPageMixin, SearchFormMixin, FormMixin, DetailView):
         object = PostText.objects.get(slug=slug)
         form = self.get_form()
         Comments.objects.create(thread_id=object.pk, body=body, author=self.request.user)
+        PostText.objects.filter(slug=slug).update(comments_count = F('comments_count') +1)
         if form.is_valid():
             return super(PostView, self).form_valid(form)
         else:
