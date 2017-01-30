@@ -11,7 +11,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.utils.http import is_safe_url
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import SubForum, PostText, UserProfile, Voter, Comments
-from .forms import SearchForm, SignUpForm, VotingForm, CommentForm, MyAuthenticationForm
+from .forms import SearchForm, SignUpForm, VotingForm, CommentForm, MyAuthenticationForm, TextPost, LinkPost
 from .mixins import NewPostSuccessURLMixin, GetAuthorMixin, SearchFormMixin, LoginRequiredMixin, PreviousPageMixin, AlreadyLoggedin
 from io import StringIO
 from PIL import Image
@@ -87,13 +87,12 @@ class PostView(PreviousPageMixin, SearchFormMixin, FormMixin, DetailView):
     
 
 class NewTextPost(LoginRequiredMixin, SearchFormMixin, GetAuthorMixin, NewPostSuccessURLMixin, CreateView):
-    model = PostText
-    fields = ['title', 'body', 'subreddit']
+    form_class = TextPost
     template_name = 'r/new_text_post.html'
     
 
 class NewLinkPost(NewTextPost):
-    fields = ['link', 'image', 'title', 'subreddit']
+    form_class = LinkPost
     
 
 class RegisterUser(AlreadyLoggedin, FormView):

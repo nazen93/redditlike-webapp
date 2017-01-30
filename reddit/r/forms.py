@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.db.models.fields import CharField
-from .models import Comments
+from .models import PostText, Comments
 
 
 class SearchForm(forms.Form):
@@ -12,6 +12,18 @@ class SearchForm(forms.Form):
         'placeholder': 'search'
         }))
     
+class TextPost(forms.ModelForm):
+    
+    class Meta:
+        model = PostText
+        fields = ['title', 'body', 'subreddit']
+    
+
+class LinkPost(forms.ModelForm):
+    
+    class Meta:
+        model = PostText
+        fields = ['link', 'image', 'title', 'subreddit']
     
 class SignUpForm(forms.ModelForm):
     password2 = forms.CharField(label='', widget=forms.PasswordInput(attrs={
@@ -53,6 +65,7 @@ class VotingForm(forms.Form):
     Vote = forms.BooleanField(required=False)
     
 class CommentForm(forms.ModelForm):
+    
     class Meta:
         model = Comments
         fields = ['body']

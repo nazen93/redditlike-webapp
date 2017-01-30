@@ -139,8 +139,8 @@
 	float:right;
 }
 
-#new-text-post {
-	float:right;
+#new-post {
+	float:left;
 }
 
 #post{
@@ -292,4 +292,57 @@
 	font-size: small;
 	font-family: Verdana;
 	padding-bottom: 0;
+}
+
+
+
+#panel-body{
+	background-color: #cee2f8;
+	border: 0;
+	margin-bottom: 0;
+	padding-top: 10px;
+	padding-bottom: 20px;
+}
+
+#panel-body > p {
+	margin-bottom: 0;
+}
+
+#addpost-nav-tabs{
+	margin-top: 15px;
+}
+
+#addpost-nav-tabs > li > a{
+	padding-top: 0;
+	padding-bottom: 0;
+	background-color: #cee2f8;
+	font-family: Verdana;
+	font-size: x-small;
+
+}
+
+#addpost-nav-tabs > li.active > a,
+#addpost-nav-tabs > li.active > a:hover,
+#addpost-nav-tabs > li.active > a:focus{
+            background-color: #5f99cf;  
+        } 
+
+#id_link,
+#id_subreddit{
+	width: 480px;
+}
+
+#id_title{
+	width: 480px;
+	height: 50px;
+}
+
+#id_body{
+	width: 480px;
+	height: 100px;
+}
+
+#add-post-label{
+	font-family: Verdana;
+	font-size: large;
 }
