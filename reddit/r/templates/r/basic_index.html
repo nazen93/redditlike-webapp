@@ -5,6 +5,9 @@
 {% for post in TextPosts %}
 <!-- Posts list  -->
 <!-- Voting form -->
+{% block title %}
+<title>reddit posts</title>
+{% endblock %}
 <div class="row">
 	<div class="col-lg-1" id="ratting-form">
 		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
