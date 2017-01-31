@@ -12,7 +12,8 @@ class PrivateMessageForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
-        super(PrivateMessageForm, self).__init__(*args,**kwargs)
+        super(PrivateMessageForm, self).__init__(*args,**kwargs) 
+        self.fields['body'].widget.attrs['rows'] = 10
     
     def clean_recipient(self):
         recipient = self.cleaned_data.get('recipient')
@@ -25,4 +26,3 @@ class PrivateMessageForm(forms.ModelForm):
             raise forms.ValidationError('User %s does not exists' % recipient)
                              
         return recipient
-    

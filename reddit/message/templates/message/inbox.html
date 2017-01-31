@@ -1,10 +1,15 @@
-{% extends "r/index.html" %}}
+{% extends "message/inbox_base.html" %}
 {% load static %}
 {% block content %}
 {% load humanize %}
+
+		<ul class="nav nav-tabs" role="tablist" id="">
+				<li class="active"><a href="{% url 'inbox' %}">all</a></li>
+				<li><a href="{% url 'messages' %}">messages</a></li>
+				<li><a href="{% url 'mentions' %}">mentions</a></li>				
+    	</ul>
+    	
 {% for message in inbox %}
-<!-- Posts list  -->
-<!-- Voting form -->
 <div class="row">	
 	<div class="col-sm-9" id="post">
 			{% if title %}
@@ -16,7 +21,6 @@
 			{% endif %}
 			<p> {{message.body}} </p>
 			<p id="postlist-date"> dodane {{message.date|naturaltime}} przez {{message.author}}
-
 	</div>			
 </div>
 

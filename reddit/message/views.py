@@ -61,7 +61,7 @@ class Mentions(LoginRequiredMixin, ListView):
 class SendPM(LoginRequiredMixin, GetAuthorMixin, CreateView):    
     form_class = PrivateMessageForm
     success_url = reverse_lazy('index')
-    template_name = 'r/new_text_post.html'
+    template_name = 'message/compose_pm.html'
     
     def get_form_kwargs(self):
         kwargs = super(SendPM, self).get_form_kwargs()
