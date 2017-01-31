@@ -334,7 +334,6 @@
 
 #id_title{
 	width: 480px;
-	height: 50px;
 }
 
 #id_body{
@@ -342,7 +341,19 @@
 	height: 100px;
 }
 
+#id_topic,
+#id_recipient{
+	width: 480px;
+}
+
 #add-post-label{
 	font-family: Verdana;
 	font-size: large;
+}
+
+#text-above-form{
+	font-family: Verdana;
+	font-size: large;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }

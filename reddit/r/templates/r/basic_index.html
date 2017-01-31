@@ -1,5 +1,17 @@
 {% extends "r/index.html" %}}
 {% load static %}
+<!-- Default navbar tabs -->
+{% block navbar_tabs %}
+	<li class="active"><a href="#">hit</a></li>
+	<li><a href="#">new</a></li>
+	<li><a href="#">rising</a></li>
+	<li><a href="#">controversial</a></li>
+	<li><a href="#">top</a></li>
+	<li><a href="#">gilded</a></li>
+	<li><a href="#">wiki</a></li>
+	<li><a href="#">promoted</a></li>
+{% endblock %}
+
 {% block content %}
 {% load humanize %}
 {% for post in TextPosts %}
