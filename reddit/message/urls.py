@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^mentions/$', views.Mentions.as_view(), name='mentions'),
     url(r'^compose/$', views.SendPM.as_view(), name='compose'),
     url(r'^sent/$', views.Sent.as_view(), name='sent'),
+    url(r'^post_replies/$', views.PostReplies.as_view(), name="post_replies"),
     url(r'compose/to=(?P<user>[\w]+)$', views.SenPMTo.as_view(), name='pm'),
 ]

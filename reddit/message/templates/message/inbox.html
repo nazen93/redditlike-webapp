@@ -2,25 +2,31 @@
 {% load static %}
 {% block content %}
 {% load humanize %}
-
-		<ul class="nav nav-tabs" role="tablist" id="">
+		<ul class="nav nav-tabs" role="tablist" id="inbox-tabs">
 				<li class="active"><a href="{% url 'inbox' %}">all</a></li>
 				<li><a href="{% url 'messages' %}">messages</a></li>
+				<li><a href="{% url 'post_replies' %}">post replies</a>		
 				<li><a href="{% url 'mentions' %}">mentions</a></li>				
-    	</ul>
-    	
+    	</ul>   	
 {% for message in inbox %}
 <div class="row">	
-	<div class="col-sm-9" id="post">
-			{% if title %}
-			<a id="post-title" href="{{message.topic}}">{{message.title}}</a>
-			{% elif topic %}
-			<a>{{message.topic}}</a>
+	<div class="col-lg-9" id="inbox-all">
+			{% if message.title %}
+			<b>post reply <a href="{% url 'detailview' word=message.subreddit slug=message.slug %}">{{message.title}}</a>
+			{% elif message.topic %}
+			<div class="panel panel-default" id="author-panel">
+				<b>{{message.author}}</b>
+			</div> 
+			<b>{{message.topic}}</b>	
+			<p id="message-data">from <a href="#">{{message.author}}</a> sent {{message.date|naturaltime}}</p>
+			<p id="body-message"> {{message.body}} </p>
+			<p id="under-message"> <a href="{% url 'pm' user=message.author %}">reply</a>			
 			{% else %}
-			<a>{{message.thread}}</a>
+			<b>post reply</b> <a href="{% url 'detailview' word=message.thread.subreddit slug=message.thread.slug %}"><i>{{message.thread}}</i></</a>
+			<p id="message-data">from <a href="#">{{message.author}}</a> via <a href="{% url 'category' category=message.thread.subreddit %}">/r/{{message.thread.subreddit}}</a> sent {{message.date|naturaltime}}</p>
+			<p id="body-message"> {{message.body}} </p>
+			<p id="under-message"> <a href="{% url 'detailview' word=message.thread.subreddit slug=message.thread.slug %}">full comments ({{message.thread.comments_count}})</a>
 			{% endif %}
-			<p> {{message.body}} </p>
-			<p id="postlist-date"> dodane {{message.date|naturaltime}} przez {{message.author}}
 	</div>			
 </div>
 

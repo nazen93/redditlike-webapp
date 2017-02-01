@@ -1,0 +1,22 @@
+{% extends "message/inbox_base.html" %}
+{% load static %}
+{% block content %}
+{% load humanize %}
+		<ul class="nav nav-tabs" role="tablist" id="inbox-tabs">
+				<li><a href="{% url 'inbox' %}">all</a></li>
+				<li><a href="{% url 'messages' %}">messages</a></li>
+				<li class="active"><a href="{% url 'post_replies' %}">post replies</a>		
+				<li><a href="{% url 'mentions' %}">mentions</a></li>	
+    	</ul>
+{% for message in Messages %}
+<div class="row">	
+	<div class="col-sm-9" id="messages-column">
+			<b>post reply</b> <a href="{% url 'detailview' word=message.thread.subreddit slug=message.thread.slug %}"><i>{{message.thread}}</i></</a>
+			<p id="message-data">from <a href="#">{{message.author}}</a> via <a href="{% url 'category' category=message.thread.subreddit %}">/r/{{message.thread.subreddit}}</a> sent {{message.date|naturaltime}}</p>
+			<p id="body-message"> {{message.body}} </p>
+			<p id="under-message"> <a href="{% url 'detailview' word=message.thread.subreddit slug=message.thread.slug %}">full comments ({{message.thread.comments_count}})</a>
+	</div>			
+</div>
+
+{% endfor %}
+{% endblock %}

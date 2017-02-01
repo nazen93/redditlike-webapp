@@ -357,3 +357,66 @@
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
+
+#inbox-tabs > li > a{
+	padding-top: 0;
+	padding-bottom: 0;
+	margin-top: 10px;
+}
+
+
+#inbox-tabs > li.active > a,
+#inbox-tabs > li.active > a:hover,
+#inbox-tabs > li.active > a:focus{
+            background-color: white;  
+            color: red;
+} 
+        
+#inbox-all{
+	margin-top: 10px;
+	font-family: Verdana;
+	font-size: small;
+}
+
+#inbox-all > p {
+	margin-left: 15px;
+}
+
+#inbox-all > b{
+	margin-right: 7px;
+}
+
+#message-data{
+	font-size: x-small;
+}
+
+#message-data > a {
+	color: #5f99cf;
+	font-weight: bold;
+}
+
+#under-message > a{
+	font-size: x-small;
+}
+
+#body-message{
+	margin-bottom: 5px;
+}
+
+#messages-column{
+	margin-top: 10px;
+}
+
+#author-panel {
+	margin-right: 15px;
+	background-color: #cee2f8;
+	color: #5f99cf;
+	padding right: 10px;
+	padding-left: 5px;
+	float: left;
+}
+
+#error {
+	color: red;
+	margin-top: 10px;
+}

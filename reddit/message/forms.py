@@ -23,6 +23,9 @@ class PrivateMessageForm(forms.ModelForm):
             raise forms.ValidationError("You can't send a messeage to youself")
         
         elif not User.objects.filter(username=recipient).exists():
-            raise forms.ValidationError('User %s does not exists' % recipient)
+            raise forms.ValidationError('User %s does not exist' % recipient)
+        
+        elif recipient == None or recipient == "":
+            raise forms.ValidationError('enter a username')
                              
         return recipient

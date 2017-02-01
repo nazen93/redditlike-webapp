@@ -17,9 +17,9 @@ class Inbox(LoginRequiredMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Inbox, self).get_context_data(*args, **kwargs)
         user = self.request.user
-        mentioned_user = '@'+str(self.request.user)
         messages_query = PrivateMessage.objects.filter(recipient=user)
-        post_query = PostText.objects.filter(Q(body__icontains=user) | Q(title__icontains=user))
+        post_query = Comments.objects.filter(thread__author=user)
+        #post_query = PostText.objects.filter(Q(body__icontains=user) | Q(title__icontains=user))
         comment_query = Comments.objects.filter(body__icontains=user)
         combined_query = list(chain(messages_query, post_query, comment_query))
         combined_query.sort(key=lambda i:i.date, reverse=True)
@@ -38,10 +38,18 @@ class Messages(LoginRequiredMixin, ListView):
     
     
 class Sent(Messages):
+    template_name = "message/sent.html"
     
     def get_queryset(self):
         user = self.request.user
         return PrivateMessage.objects.filter(author=user)
+    
+class PostReplies(Messages):
+    template_name = "message/post_replies.html"
+    
+    def get_queryset(self):
+        user = self.request.user
+        return Comments.objects.filter(thread__author=user)
     
     
 class Mentions(LoginRequiredMixin, ListView):

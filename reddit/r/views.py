@@ -162,7 +162,8 @@ class Voting(PreviousPageMixin, LoginRequiredMixin, SearchFormMixin, FormView):
             voter_object.update(voting_direction='up')
         elif direction=="up":
             post_object.update(rating=F('rating') + 1)
-            Voter.objects.create(vote_id=post_pk, user_id=self.request.user.id, voting_direction=direction)
+            voted_object = Voter.objects.create(vote_id=post_pk, user_id=self.request.user.id, voting_direction=direction)
+            post_object.update(voted=voted_object)
         elif direction=='down' and voter_object_up.exists():
             post_object.update(rating=F('rating') - 2)
             voter_object.update(voting_direction='down')
@@ -174,6 +175,7 @@ class Voting(PreviousPageMixin, LoginRequiredMixin, SearchFormMixin, FormView):
             voter_object.update(voting_direction='down')
         elif direction=='down':
             post_object.update(rating=F('rating') - 1)
-            Voter.objects.create(vote_id=post_pk, user_id=self.request.user.id, voting_direction=direction)
+            voted_object = Voter.objects.create(vote_id=post_pk, user_id=self.request.user.id, voting_direction=direction)
+            post_object.update(voted=voted_object)
                             
         return super(Voting, self).form_valid(form)

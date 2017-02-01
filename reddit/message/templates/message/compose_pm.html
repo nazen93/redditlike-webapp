@@ -7,7 +7,7 @@
 			<div id="text-above-form">
 			send a private message
 			</div>		
-		 	<form id="new-post"  method="post" enctype="multipart/form-data" action="{% url 'new_link_post' %}">
+		 	<form id="new-post"  method="post" enctype="multipart/form-data" action="{% url 'compose' %}">
 		    	{% csrf_token %}
 		 		{% for field in form %}
 	 			<div class="panel panel-default">
@@ -16,6 +16,11 @@
 							{{field.label}}
 						</div>
 	 					<p>{{field}}</p>
+	 					{% for error in field.errors %}
+	 					<div id="error">
+	 					{{error}}
+	 					</div>
+						{% endfor %}
 	 				</div>
 	 			</div>
 	 			{% endfor %}

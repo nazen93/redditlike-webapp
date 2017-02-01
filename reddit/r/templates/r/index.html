@@ -62,7 +62,7 @@
 	                			<div class="modal-body">
 	                				<div class="row">
 	                					<div class="col-sm-5 col-sm-offset-1" id="modal-border">	                				
-	                						<form method="POST" class="action="{% url 'register' %}">{% csrf_token %}
+	                						<form method="POST" action="{% url 'register' %}">{% csrf_token %}
 				                				{{register_form|crispy}}
 				                				<button type="submit" id="modal-button" class="btn btn-primary">Register</button>	                				
 	                						</form>
