@@ -35,7 +35,8 @@ class PostText(ImgurThumbnail, models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.slug = slugify(self.title)            
+            self.slug = slugify(self.title)  
+                      
         if self.image:
             picture_path = self.image
             picture_file = BytesIO(picture_path.read())
@@ -49,6 +50,8 @@ class PostText(ImgurThumbnail, models.Model):
                     
         if self.link and 'imgur' in self.link:
             picture_path = self.download_thumbnail(self.imgur_thumbnail, self.link, self.imgur_imageid)
+            fullsize_picture_path = self.imgur_thumbnail(self.link, self.imgur_imageid)            
+            self.body = self.imgur_image_large(fullsize_picture_path)
             self.image = picture_path
         
         return super(PostText, self).save(*args, **kwargs)               
@@ -59,7 +62,7 @@ class PostText(ImgurThumbnail, models.Model):
 
 class Comments(models.Model):
     thread = models.ForeignKey(PostText, related_name='comments')
-    body = models.TextField()
+    body = models.TextField('')
     date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, null=True, editable=False)
 

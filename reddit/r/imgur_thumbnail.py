@@ -14,7 +14,7 @@ class ImgurThumbnail:
     def imgur_imageid(self, url):
         imgur_list = url.split('/')
         imgur_id = imgur_list[-1]
-        return imgur_id
+        return imgur_id           
         
     def imgur_thumbnail(self, url, imgur_id):
         imgurl = requests.get('https://api.imgur.com/3/gallery/'+imgur_id(url))
@@ -25,6 +25,12 @@ class ImgurThumbnail:
             imgurl_image = imgurl_json['data']['link']
 
         return imgurl_image
+    
+    def imgur_image_large(self, url):
+        splitted_url = url.split('.')
+        splitted_url[-2] = splitted_url[-2]+'l'
+        thumbnail_url = '.'.join(splitted_url)
+        return thumbnail_url
     
     def download_thumbnail(self, new_thumbnail, url, imgur_id):
         image = requests.get(new_thumbnail(url, imgur_id))
@@ -39,11 +45,3 @@ class ImgurThumbnail:
         file_name = settings.MEDIA_ROOT+'/'+image_name       
         file.save(file_name, 'JPEG')
         return file_name
-    
-"""   
-    def small_thumbnail_link(self, url):
-        splitted_url = url.split('.')
-        splitted_url[-2] = splitted_url[-2]+'s'
-        thumbnail_url = '.'.join(splitted_url)
-        return thumbnail_url
-"""

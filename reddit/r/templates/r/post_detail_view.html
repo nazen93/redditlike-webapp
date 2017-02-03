@@ -2,28 +2,51 @@
 {% block content %}
 {% load humanize %}
 {% load crispy_forms_tags %}
-<div class="container">
-{{TextPost.vote_status}}
-	<div class='row'>
-     	<h1>{{TextPost.title}}{{LinkPosts.title}}</h1>
-    </div> 
-    <div class='row'>
-    	<p>{{TextPost.body}}</p>
-    </div>
-    <p>{{TextPost.subreddit}}</p>
-    <footer>{{TextPost.date|naturaltime}}</footer>
-   		 <form method="POST" action="{% url 'detailview' word=TextPost.subreddit slug=TextPost.slug %}">
-         {% csrf_token %}
-         {{form|crispy}}
-         <input type="submit" class="btn btn-default" value="save" </input>
-         </form>
-         
-       {% for comment in comments %}  
-       <div class="row">
-       <h3>{{comment.author}}</h3>
-       {{comment.body}}
-       </div>
-       {% endfor %}
-        
-</div>
+	<div class="row">
+		<div class="col-lg-12">
+     		<h3 id="detail-post-title">{{TextPost.title}}{{LinkPosts.title}}</h3>
+     		<p id="postlist-details">submitted {{TextPost.date|naturaltime}} by <a href="#">{{TextPost.author}}</a></p>
+     		<p>
+     		<div class="panel panel-default" id="body-panel">
+     			{{TextPost.body}}
+     		</div>
+     		</p>
+     		<footer id="post-footer">
+     		<a href="{% url 'detailview' word=TextPost.subreddit slug=TextPost.slug %}">{{TextPost.comments_count}} comments</a> 
+     		<a href="#">share</a>
+     		<a href="#">save</a>
+     		<a href="#">report</a>
+     		</footer>
+    	</div> 	
+    </div>	
+	<div class="row" id="post-comment">
+		<div class="col-lg-12">
+	   		 <form method="POST" action="{% url 'detailview' word=TextPost.subreddit slug=TextPost.slug %}">
+		         {% csrf_token %}
+		         {{form|crispy}}
+		         <input type="submit" id="comment-button" class="btn btn-default" value="save" </input>
+	         </form>
+         </div>
+    </div>      
+    {% for comment in comments %}  
+    <div class="row" id="comment-row">
+		<div class="col-lg-12">
+			<div id="comment-header">
+				<a href="#">{{comment.author}}</a> {{comment.date|naturaltime}}
+			</div>
+		    <p>{{comment.body}}</p>
+		    <a data-toggle="collapse" href="#reply{{comment.pk}}" aria-expanded="false" aria-controls="reply{{comment.pk}}">
+  			reply
+			</a>
+			<div class="collapse" id="reply{{comment.pk}}">
+			   	 <form method="POST" action="{% url 'detailview' word=TextPost.subreddit slug=TextPost.slug %}">
+			         {% csrf_token %}
+			         {{form|crispy}}
+			         <input type="submit" id="comment-button" class="btn btn-default" value="save" </input>
+		         </form>
+			</div>
+	    </div>
+	</div>
+    {% endfor %}
+
 {% endblock %}

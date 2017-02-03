@@ -34,7 +34,7 @@ class Messages(LoginRequiredMixin, ListView):
     
     def get_queryset(self):
         user = self.request.user
-        return PrivateMessage.objects.filter(recipient=user)
+        return PrivateMessage.objects.filter(recipient=user).order_by('-date')
     
     
 class Sent(Messages):
@@ -42,14 +42,14 @@ class Sent(Messages):
     
     def get_queryset(self):
         user = self.request.user
-        return PrivateMessage.objects.filter(author=user)
+        return PrivateMessage.objects.filter(author=user).order_by('-date')
     
 class PostReplies(Messages):
     template_name = "message/post_replies.html"
     
     def get_queryset(self):
         user = self.request.user
-        return Comments.objects.filter(thread__author=user)
+        return Comments.objects.filter(thread__author=user).order_by('-date')
     
     
 class Mentions(LoginRequiredMixin, ListView):

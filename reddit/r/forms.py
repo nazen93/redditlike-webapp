@@ -66,6 +66,10 @@ class VotingForm(forms.Form):
     
 class CommentForm(forms.ModelForm):
     
+    def __init__(self, *args, **kwargs):
+        super(CommentForm, self).__init__(*args, **kwargs)
+        self.fields['body'].widget.attrs['placeholder'] = 'type your comment here'
+    
     class Meta:
         model = Comments
         fields = ['body']

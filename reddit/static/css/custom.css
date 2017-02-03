@@ -154,6 +154,7 @@
 	color: #0000ff;
 }
 
+#comment-header, 
 #postlist-details{
 	font-size: x-small;
 	color: #888;
@@ -400,7 +401,7 @@
 }
 
 #body-message{
-	margin-bottom: 5px;
+	margin-bottom: 0px;
 }
 
 #messages-column{
@@ -408,15 +409,70 @@
 }
 
 #author-panel {
-	margin-right: 15px;
+	margin-right: 5px;
 	background-color: #cee2f8;
 	color: #5f99cf;
-	padding right: 10px;
+	padding-right: 5px;
 	padding-left: 5px;
-	float: left;
+	display: inline-block;
+}
+
+#sent-message-body{
+	margin-left: 15px;
 }
 
 #error {
 	color: red;
 	margin-top: 10px;
+}
+
+#author-panel-sent {
+	margin-bottom: 10px;
+	margin-right: 5px;
+	background-color: #cee2f8;
+	color: #5f99cf;
+	padding-right: 5px;
+	padding-left: 5px;
+	display: inline-block;
+}
+
+#body-panel {
+	padding: 5px 300px 5px 5px;
+	display: inline-block;
+	margin-bottom: 0;
+	font-family: Verdana;
+}
+
+#detail-post-title{
+	margin-bottom: 0;
+}
+
+#post-footer{
+	font-size: x-small;
+	font-weight: bold;
+	font-family: Verdana;
+}
+
+#post-comment{
+	border-top: 1px solid;
+	border-color: #E7E7E7;
+}
+#comment-row{
+	border: 1px solid;
+	border-right: 0;
+	border-color: #E7E7E7;
+	
+}
+
+#comment-row + #comment-row{
+	border-top:0;
+}
+
+#div_id_body{
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#comment-button{
+	margin-bottom: 20px;
 }
