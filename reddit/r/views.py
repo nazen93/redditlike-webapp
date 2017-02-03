@@ -84,7 +84,6 @@ class PostView(PreviousPageMixin, SearchFormMixin, FormMixin, DetailView):
         comments = Comments.objects.filter(thread_id=post_object.pk).order_by('date')
         context['comments'] = comments
         return context
-    
 
 class NewTextPost(LoginRequiredMixin, SearchFormMixin, GetAuthorMixin, NewPostSuccessURLMixin, CreateView):
     form_class = TextPost
