@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.db.models.fields import CharField
-from .models import PostText, Comments
+from .models import PostText, Comments, CommentReplies
 
 
 class SearchForm(forms.Form):
@@ -73,7 +73,14 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comments
         fields = ['body']
-        
+       
+
+class CommentRepliesForm(forms.ModelForm):
+    
+    class Meta:
+        model = CommentReplies
+        fields = ['body']
+
 
 class MyAuthenticationForm(AuthenticationForm):
     username = forms.CharField(label='', widget=forms.TextInput(attrs={

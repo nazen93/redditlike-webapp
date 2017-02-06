@@ -41,12 +41,18 @@ class PostText(ImgurThumbnail, models.Model):
             picture_path = self.image
             picture_file = BytesIO(picture_path.read())
             picture = Image.open(picture_file)
+            picture_body = picture
             
             picture.thumbnail((55,55), Image.ANTIALIAS)
+            picture_body.resize((200,200), Image.ANTIALIAS)
             picture_file = BytesIO()
+            body_image = 'kek.jpg'
+            file_name = settings.MEDIA_ROOT+'/'+body_image  
             picture.save(picture_file, 'JPEG')
+            picture_body.save(file_name, 'JPEG')
             
-            picture_path.file = picture_file  
+            picture_path.file = picture_file
+            self.body = picture_path.file
                     
         if self.link and 'imgur' in self.link:
             picture_path = self.download_thumbnail(self.imgur_thumbnail, self.link, self.imgur_imageid)
@@ -65,10 +71,21 @@ class Comments(models.Model):
     body = models.TextField('')
     date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, null=True, editable=False)
+    default_instance = models.IntegerField(default=0)
 
     def __str__(self):
-        return str(self.thread)
+        return self.body
+
+class CommentReplies(models.Model):
+    main_post = models.ForeignKey(Comments, null=True)
+    body = models.TextField('', null=True)
+    date = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, null=True, editable=False)
+    instance = models.IntegerField(default=0, editable=False)
     
+    def __str__(self):
+        return self.body
+ 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

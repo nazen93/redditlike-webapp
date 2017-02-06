@@ -10,8 +10,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.http import is_safe_url
 from django.http import HttpResponseRedirect, HttpResponse
-from .models import SubForum, PostText, UserProfile, Voter, Comments
-from .forms import SearchForm, SignUpForm, VotingForm, CommentForm, MyAuthenticationForm, TextPost, LinkPost
+from .models import SubForum, PostText, UserProfile, Voter, Comments, CommentReplies
+from .forms import SearchForm, SignUpForm, VotingForm, CommentForm, CommentRepliesForm, MyAuthenticationForm, TextPost, LinkPost
 from .mixins import NewPostSuccessURLMixin, GetAuthorMixin, SearchFormMixin, LoginRequiredMixin, PreviousPageMixin, AlreadyLoggedin
 from io import StringIO
 from PIL import Image
@@ -66,24 +66,46 @@ class PostView(PreviousPageMixin, SearchFormMixin, FormMixin, DetailView):
     form_class = CommentForm
 
     def post(self, request, *args, **kwargs):
-        body = self.request.POST['body']
-        slug = self.kwargs['slug']
-        object = PostText.objects.get(slug=slug)
-        form = self.get_form()
-        Comments.objects.create(thread_id=object.pk, body=body, author=self.request.user)
-        PostText.objects.filter(slug=slug).update(comments_count = F('comments_count') +1)
+        try:
+            comment_pk = self.kwargs['comment_pk']
+        except KeyError: 
+            self.kwargs['comment_pk'] = None
+            comment_pk = self.kwargs['comment_pk']      
+                      
+        if comment_pk == None:
+            body = self.request.POST['body']
+            slug = self.kwargs['slug']
+            object = PostText.objects.get(slug=slug)
+            form = self.get_form()
+            Comments.objects.create(thread_id=object.pk, body=body, author=self.request.user)
+        else:
+            body = self.request.POST['body']
+            slug = self.kwargs['slug']
+            id = self.kwargs['comment_pk']
+            instance_level = self.kwargs['instance']
+            instance_level = int(instance_level)
+            comment_object = Comments.objects.get(pk=id)
+            form = self.get_form()
+            CommentReplies.objects.create(main_post_id=comment_object.pk, body=body, author=self.request.user, instance=instance_level+1)     
+                   
+        PostText.objects.filter(slug=self.kwargs['slug']).update(comments_count = F('comments_count') +1)              
         if form.is_valid():
             return super(PostView, self).form_valid(form)
         else:
             return super(PostView, self).form_invalid(form)
  
-    def get_context_data(self, *args, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super(PostView, self).get_context_data()
         slug = self.kwargs['slug']
         post_object = PostText.objects.get(slug=slug)
         comments = Comments.objects.filter(thread_id=post_object.pk).order_by('date')
+        for comment in comments:
+            comment.child = CommentReplies.objects.filter(main_post_id=comment.pk)
+            for reply in comment.child:
+                reply.padding = reply.instance * 25
         context['comments'] = comments
         return context
+
 
 class NewTextPost(LoginRequiredMixin, SearchFormMixin, GetAuthorMixin, NewPostSuccessURLMixin, CreateView):
     form_class = TextPost

@@ -1,4 +1,9 @@
 {% extends 'r/index.html' %}
+
+{% block title %}
+<title>{{TextPost.title}}</title>
+{% endblock %}
+
 {% block content %}
 {% load humanize %}
 {% load crispy_forms_tags %}
@@ -37,14 +42,36 @@
 		    <p>{{comment.body}}</p>
 		    <a data-toggle="collapse" href="#reply{{comment.pk}}" aria-expanded="false" aria-controls="reply{{comment.pk}}">
   			reply
-			</a>
-			<div class="collapse" id="reply{{comment.pk}}">
-			   	 <form method="POST" action="{% url 'detailview' word=TextPost.subreddit slug=TextPost.slug %}">
+  			</a>
+  			<div class="collapse" id="reply{{comment.pk}}">
+			   	 <form method="POST" action="{% url 'comment_reply' word=TextPost.subreddit.name slug=TextPost.slug comment_pk=comment.id instance=comment.default_instance %}">
 			         {% csrf_token %}
-			         {{form|crispy}}
+			         {{comment_reply_form}}
 			         <input type="submit" id="comment-button" class="btn btn-default" value="save" </input>
 		         </form>
 			</div>
+			
+			    {% for reply in comment.child %}
+			    <div style="margin-left:{{reply.padding}}px;">
+			    <div id="comment-header">
+					<a href="#">{{reply.author}}</a> {{reply.date|naturaltime}}
+				</div>
+				<p>{{reply.body}}</p>
+				{{reply.instance}}
+				<a data-toggle="collapse" href="#reply{{reply.pk}}" aria-expanded="false" aria-controls="reply{{reply.pk}}">
+				reply 
+				</a>
+				<div class="collapse" id="reply{{reply.pk}}">
+				   	 <form method="POST" action="{% url 'comment_reply' word=TextPost.subreddit.name slug=TextPost.slug comment_pk=comment.id instance=reply.instance %}">
+				         {% csrf_token %}
+				         {{comment_reply_form}}
+				         <input type="submit" id="comment-button" class="btn btn-default" value="save" </input>
+			         </form>
+				</div>
+				</div>
+				{% endfor %}
+			
+
 	    </div>
 	</div>
     {% endfor %}

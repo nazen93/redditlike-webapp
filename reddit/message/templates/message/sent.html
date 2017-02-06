@@ -1,5 +1,10 @@
 {% extends "message/inbox_base.html" %}
 {% load static %}
+
+{% block title %}
+<title>Messages sent</title>
+{% endblock %}
+
 {% block content %}
 {% load humanize %}
 {% for message in Messages %}
