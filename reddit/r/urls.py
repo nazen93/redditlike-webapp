@@ -21,7 +21,6 @@ from django.views.generic.base import RedirectView
 
 urlpatterns = [
     url(r'^$', views.PostsList.as_view(), name='index'),
-    url(r'^test/$', views.Testoriiiino.as_view()),
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
     url(r'^(?P<word>[\w]+)/(?P<pk>.*)/vote(?P<direction>(up|down))/$', views.Voting.as_view(), name='voting'),
     url(r'^(?P<word>[\w]+)/(?P<slug>[^/]+)/$', views.PostView.as_view(), name='detailview'),

@@ -8,7 +8,7 @@
 {% block content %}
 {% load humanize %}
 {% for message in Messages %}
-<div class="row">	
+<div class="row" id="sent-row">	
 	<div class="col-sm-9">
 			sent to {{message.receipent}}
 			<div class="panel panel-default" id="author-panel-sent">

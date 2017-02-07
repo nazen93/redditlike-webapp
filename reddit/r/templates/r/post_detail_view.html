@@ -1,19 +1,41 @@
 {% extends 'r/index.html' %}
-
+{% load static %}
+{% load humanize %}
+{% load crispy_forms_tags %}
 {% block title %}
 <title>{{TextPost.title}}</title>
 {% endblock %}
 
+{% block post_score %}
+	        <div class="row">	        	
+	        	<div class="col-lg-12">
+	        		<div class="panel panel-primary pull-right text-center" id="login-panel">
+	        			<p>this post was subbmited on {{TextPost.date|date:'Y-m-d'}}</p>
+						<p><b id="post-ratting">{{TextPost.rating}}</b><b> points</b> ({{TextPost.average}}% upvoted)</p>
+					</div>
+				</div>
+			</div> 			
+{% endblock %}
+
 {% block content %}
-{% load humanize %}
-{% load crispy_forms_tags %}
+<!-- Post details -->
 	<div class="row">
-		<div class="col-lg-12">
+		<!-- Post voting form -->
+		<div class="col-lg-1" id="detail-ratting-form">
+			<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='up' %}"> {% csrf_token %}
+				<input type="image" value="submit" src="{% static "images/arrow-up.png" %}">
+			</form>
+			<p>{{TextPost.rating}}</p>
+			<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='down' %}"> {% csrf_token %}
+				<input type="image" value="submit" src="{% static "images/arrow-down.png" %}">
+			</form>
+		</div>
+		<div class="col-lg-11">
      		<h3 id="detail-post-title">{{TextPost.title}}{{LinkPosts.title}}</h3>
      		<p id="postlist-details">submitted {{TextPost.date|naturaltime}} by <a href="#">{{TextPost.author}}</a></p>
      		<p>
      		<div class="panel panel-default" id="body-panel">
-     			{{TextPost.body}}
+     			<p>{{TextPost.body}}</p>
      		</div>
      		</p>
      		<footer id="post-footer">
@@ -24,6 +46,7 @@
      		</footer>
     	</div> 	
     </div>	
+    <!-- Comment form -->
 	<div class="row" id="post-comment">
 		<div class="col-lg-12">
 	   		 <form method="POST" action="{% url 'detailview' word=TextPost.subreddit slug=TextPost.slug %}">
@@ -33,15 +56,25 @@
 	         </form>
          </div>
     </div>      
+    <!-- Comments of the first instance -->
     {% for comment in comments %}  
     <div class="row" id="comment-row">
-		<div class="col-lg-12">
+    	<!-- Main comment voting form -->
+    	<div class="col-lg-1" id="main-comment-ratting-form">
+			<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='up' %}"> {% csrf_token %}
+				<input type="image" value="submit" src="{% static "images/arrow-up-xsmall.png" %}">
+			</form>
+			<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='down' %}"> {% csrf_token %}
+				<input type="image" value="submit" src="{% static "images/arrow-down-xsmall.png" %}">
+			</form>
+		</div>
+		<div class="col-lg-11">
 			<div id="comment-header">
 				<a href="#">{{comment.author}}</a> {{comment.date|naturaltime}}
 			</div>
-		    <p>{{comment.body}}</p>
+		    <p id="comment-body">{{comment.body}}</p>
 		    <a data-toggle="collapse" href="#reply{{comment.pk}}" aria-expanded="false" aria-controls="reply{{comment.pk}}">
-  			reply
+  			<p id="reply-button">reply</p>
   			</a>
   			<div class="collapse" id="reply{{comment.pk}}">
 			   	 <form method="POST" action="{% url 'comment_reply' word=TextPost.subreddit.name slug=TextPost.slug comment_pk=comment.id instance=comment.default_instance %}">
@@ -49,29 +82,39 @@
 			         {{comment_reply_form}}
 			         <input type="submit" id="comment-button" class="btn btn-default" value="save" </input>
 		         </form>
-			</div>
-			
+			</div>			
+				<!-- Children of the main comment -->
 			    {% for reply in comment.child %}
-			    <div style="margin-left:{{reply.padding}}px;">
-			    <div id="comment-header">
-					<a href="#">{{reply.author}}</a> {{reply.date|naturaltime}}
+			    <div class="row"  style="margin-left:{{reply.padding}}px;">
+			    <!-- Child comment voting form -->
+					<div class="col-lg-1" id="main-comment-ratting-form">
+						<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='up' %}"> {% csrf_token %}
+							<input type="image" value="submit" src="{% static "images/arrow-up-xsmall.png" %}">
+						</form>
+						<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='down' %}"> {% csrf_token %}
+							<input type="image" value="submit" src="{% static "images/arrow-down-xsmall.png" %}">
+						</form>
+					</div>
+				    <div class="col-lg-11" id="child-comment-column">
+					    <div id="comment-reply">
+						    <div id="comment-header">
+								<a href="#">{{reply.author}}</a> {{reply.date|naturaltime}}
+							</div>
+							<p id="reply-body">{{reply.body}}</p>
+							<a data-toggle="collapse" href="#reply{{reply.pk}}" aria-expanded="false" aria-controls="reply{{reply.pk}}">
+							<p id="reply-button">reply</p>
+							</a>
+							<div class="collapse" id="reply{{reply.pk}}">
+							   	 <form method="POST" action="{% url 'comment_reply' word=TextPost.subreddit.name slug=TextPost.slug comment_pk=comment.id instance=reply.instance %}">
+							         {% csrf_token %}
+							         {{comment_reply_form}}
+							         <input type="submit" id="comment-button" class="btn btn-default" value="save" </input>
+						         </form>
+							</div>
+						</div>
+					</div>
 				</div>
-				<p>{{reply.body}}</p>
-				{{reply.instance}}
-				<a data-toggle="collapse" href="#reply{{reply.pk}}" aria-expanded="false" aria-controls="reply{{reply.pk}}">
-				reply 
-				</a>
-				<div class="collapse" id="reply{{reply.pk}}">
-				   	 <form method="POST" action="{% url 'comment_reply' word=TextPost.subreddit.name slug=TextPost.slug comment_pk=comment.id instance=reply.instance %}">
-				         {% csrf_token %}
-				         {{comment_reply_form}}
-				         <input type="submit" id="comment-button" class="btn btn-default" value="save" </input>
-			         </form>
-				</div>
-				</div>
-				{% endfor %}
-			
-
+				{% endfor %}			
 	    </div>
 	</div>
     {% endfor %}

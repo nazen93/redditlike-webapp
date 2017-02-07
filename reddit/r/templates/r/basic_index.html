@@ -1,5 +1,6 @@
 {% extends "r/index.html" %}}
 {% load static %}
+{% load humanize %}
 <!-- Default navbar tabs -->
 {% block navbar_tabs %}
 	<li class="active"><a href="#">hit</a></li>
@@ -12,14 +13,15 @@
 	<li><a href="#">promoted</a></li>
 {% endblock %}
 
-{% block content %}
-{% load humanize %}
-{% for post in TextPosts %}
-<!-- Posts list  -->
-<!-- Voting form -->
 {% block title %}
 <title>reddit posts</title>
 {% endblock %}
+
+{% block content %}
+
+{% for post in TextPosts %}
+<!-- Posts list  -->
+<!-- Voting form -->
 <div class="row">
 	<div class="col-lg-1" id="ratting-form">
 		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
@@ -29,7 +31,6 @@
 		<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
 		{% endif %}
 		</form>
-		{{post.voted.user.username}}
 		<p>{{post.rating}}</p>
 		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='down' %}"> {% csrf_token %}
 			<input type="image" value="submit" src="{% static "images/DownVote.png" %}">

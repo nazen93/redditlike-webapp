@@ -15,7 +15,6 @@ from .forms import SearchForm, SignUpForm, VotingForm, CommentForm, CommentRepli
 from .mixins import NewPostSuccessURLMixin, GetAuthorMixin, SearchFormMixin, LoginRequiredMixin, PreviousPageMixin, AlreadyLoggedin
 from io import StringIO
 from PIL import Image
-
 from itertools import chain
 
 # Create your views here.
@@ -34,23 +33,7 @@ class PostsList(SearchFormMixin, FormMixin, ListView):
             return PostText.objects.filter(Q(body__icontains = search_data) | Q(title__icontains = search_data))
         else:
             return PostText.objects.order_by('-date')
-        
-    
-class Testoriiiino(ListView):
-    model = PostText
-    template_name = "r/test.html"
-    context_object_name = 'TextPosts'
-    
-    def get_queryset(self):
-        pierwsze = PostText.objects.all()
-        drugie = Voter.objects.filter(user=self.request.user)
-        a = []
-        for x in drugie:
-            a.append(x.vote_id)
-        a = list(set(a))
-        wut = PostText.objects.filter(pk__in=a).order_by('-date')
-        return wut
-                               
+             
         
 class SubredditPostsList(PostsList):
         
@@ -65,6 +48,20 @@ class PostView(PreviousPageMixin, SearchFormMixin, FormMixin, DetailView):
     context_object_name = 'TextPost'
     form_class = CommentForm
 
+    def get_object(self):
+        object = super(PostView, self).get_object()
+        up_votes = object.up_votes
+        down_votes = object.down_votes
+        all_votes = up_votes + down_votes
+        if all_votes == 0:
+            object.average = 0
+        else:
+            object.average = up_votes/all_votes*100
+            object.average = int(object.average)
+            if object.average < 0:
+                object.average=0                
+        return object 
+    
     def post(self, request, *args, **kwargs):
         try:
             comment_pk = self.kwargs['comment_pk']
@@ -173,29 +170,29 @@ class Voting(PreviousPageMixin, LoginRequiredMixin, SearchFormMixin, FormView):
         voter_object_none = Voter.objects.filter(vote_id=post_pk, user_id=self.request.user.id, voting_direction='empty')
 
         if direction == "up" and voter_object_up.exists():      
-            post_object.update(rating=F('rating') - 1)
+            post_object.update(rating=F('rating') - 1, up_votes=F('up_votes') - 1)           
             voter_object.update(voting_direction='empty')
         elif direction =='up' and voter_object_down.exists():
-            post_object.update(rating=F('rating') + 2)
+            post_object.update(rating=F('rating') + 2, up_votes=F('up_votes') + 1, down_votes=F('down_votes') - 1)
             voter_object.update(voting_direction='up')
         elif direction =='up' and voter_object_none.exists():
-            post_object.update(rating=F('rating') + 1)
+            post_object.update(rating=F('rating') + 1, up_votes=F('up_votes') + 1)
             voter_object.update(voting_direction='up')
         elif direction=="up":
-            post_object.update(rating=F('rating') + 1)
+            post_object.update(rating=F('rating') + 1, up_votes=F('up_votes') + 1)
             voted_object = Voter.objects.create(vote_id=post_pk, user_id=self.request.user.id, voting_direction=direction)
             post_object.update(voted=voted_object)
         elif direction=='down' and voter_object_up.exists():
-            post_object.update(rating=F('rating') - 2)
+            post_object.update(rating=F('rating') - 2, down_votes=F('down_votes') + 1, up_votes=F('up_votes') - 1)
             voter_object.update(voting_direction='down')
         elif direction=='down' and voter_object_down.exists():
-            post_object.update(rating=F('rating') + 1)
+            post_object.update(rating=F('rating') + 1, down_votes=F('down_votes') - 1)
             voter_object.update(voting_direction='empty')
         elif direction =='down' and voter_object_none.exists():
-            post_object.update(rating=F('rating') - 1)
+            post_object.update(rating=F('rating') - 1, down_votes=F('down_votes') + 1)
             voter_object.update(voting_direction='down')
         elif direction=='down':
-            post_object.update(rating=F('rating') - 1)
+            post_object.update(rating=F('rating') - 1, down_votes=F('down_votes') + 1)
             voted_object = Voter.objects.create(vote_id=post_pk, user_id=self.request.user.id, voting_direction=direction)
             post_object.update(voted=voted_object)
                             
