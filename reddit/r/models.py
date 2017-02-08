@@ -1,15 +1,17 @@
-from django.db import models
-from django.utils.text import slugify
-from django.urls import reverse
+from django.conf import settings
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from PIL import Image
-from .imgur_thumbnail import ImgurThumbnail
-from io import StringIO, BytesIO
-import io
 from django.core.files import File
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.conf import settings
+from django.db import models
+from django.db.models.signals import post_save
+from django.urls import reverse
+from django.utils.text import slugify
+
+from .imgur_thumbnail import ImgurThumbnail
+
+from io import StringIO, BytesIO
+import io
+from PIL import Image
 
 # Create your models here.
 
@@ -73,6 +75,10 @@ class Comments(models.Model):
     body = models.TextField('')
     date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, null=True, editable=False)
+    rating = models.IntegerField(default=0, editable=False)
+    voted = models.ForeignKey('Voter', null=True)
+    up_votes = models.IntegerField(default=0, editable=False)
+    down_votes = models.IntegerField(default=0, editable=False)
     default_instance = models.IntegerField(default=0)
 
     def __str__(self):
@@ -83,6 +89,10 @@ class CommentReplies(models.Model):
     body = models.TextField('', null=True)
     date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, null=True, editable=False)
+    voted = models.ForeignKey('Voter', null=True)
+    rating = models.IntegerField(default=0, editable=False)
+    up_votes = models.IntegerField(default=0, editable=False)
+    down_votes = models.IntegerField(default=0, editable=False)
     instance = models.IntegerField(default=0, editable=False)
     
     def __str__(self):

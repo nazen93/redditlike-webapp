@@ -15,16 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from . import views
-from updown.views import AddRatingFromModel
-from django.views.generic.base import RedirectView
 
 
 urlpatterns = [
     url(r'^$', views.PostsList.as_view(), name='index'),
     url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
-    url(r'^(?P<word>[\w]+)/(?P<pk>.*)/vote(?P<direction>(up|down))/$', views.Voting.as_view(), name='voting'),
+    url(r'^(?P<word>[\w]+)/(?P<pk>[0-9]+)/vote(?P<direction>(up|down))/$', views.Voting.as_view(), name='voting'),
     url(r'^(?P<word>[\w]+)/(?P<slug>[^/]+)/$', views.PostView.as_view(), name='detailview'),
-    url(r'^(?P<word>[\w]+)/(?P<slug>[^/]+)/(?P<comment_pk>[0-9]+)/(?P<instance>[0-9]+)/$', views.PostView.as_view(), name='comment_reply'),
+    url(r'^(?P<word>[\w]+)/(?P<slug>[^/]+)/(?P<pk>[0-9]+)/(?P<instance>[0-9]+)/$', views.PostView.as_view(), name='comment_reply'),
+    url(r'^(?P<word>[\w]+)/(?P<slug>[^/]+)/(?P<pk>[0-9]+)/vote(?P<direction>(up|down))/$', views.PostView.as_view(), name='comment_voting'),
     url(r'^submit/$', views.NewTextPost.as_view(), name='new_text_post'),
     url(r'^submit-link/$', views.NewLinkPost.as_view(), name='new_link_post'),
     url(r'^register/$', views.RegisterUser.as_view(), name="register"),

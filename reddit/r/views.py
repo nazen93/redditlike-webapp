@@ -1,21 +1,25 @@
-from django.shortcuts import render
-from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView, RedirectView
-from django.views.generic.edit import FormMixin
-from django.db.models import Q, F, Value
-from django.db.models.functions import Concat
-from django.urls import reverse_lazy, reverse
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import UserCreationForm
-from django.utils.http import is_safe_url
+from django.contrib.auth.models import User
+from django.db.models import Q, F, Value
+from django.db.models.functions import Concat
 from django.http import HttpResponseRedirect, HttpResponse
-from .models import SubForum, PostText, UserProfile, Voter, Comments, CommentReplies
+from django.shortcuts import render
+from django.urls import reverse_lazy, reverse
+from django.utils.http import is_safe_url
+from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView, RedirectView
+from django.views.generic.edit import FormMixin
+
 from .forms import SearchForm, SignUpForm, VotingForm, CommentForm, CommentRepliesForm, MyAuthenticationForm, TextPost, LinkPost
 from .mixins import NewPostSuccessURLMixin, GetAuthorMixin, SearchFormMixin, LoginRequiredMixin, PreviousPageMixin, AlreadyLoggedin
+from .models import SubForum, PostText, UserProfile, Voter, Comments, CommentReplies
+from .voting_class import Voting_function
+
 from io import StringIO
-from PIL import Image
 from itertools import chain
+from PIL import Image
+
 
 # Create your views here.
 
@@ -42,7 +46,7 @@ class SubredditPostsList(PostsList):
         return PostText.objects.filter(subreddit__name=category).order_by('-date')
     
         
-class PostView(PreviousPageMixin, SearchFormMixin, FormMixin, DetailView):
+class PostView(Voting_function, PreviousPageMixin, SearchFormMixin, FormMixin, DetailView):
     model = PostText
     template_name = "r/post_detail_view.html"
     context_object_name = 'TextPost'
@@ -63,29 +67,34 @@ class PostView(PreviousPageMixin, SearchFormMixin, FormMixin, DetailView):
         return object 
     
     def post(self, request, *args, **kwargs):
-        try:
-            comment_pk = self.kwargs['comment_pk']
-        except KeyError: 
-            self.kwargs['comment_pk'] = None
-            comment_pk = self.kwargs['comment_pk']      
-                      
+        variables = ['slug', 'pk', 'instance', 'direction']
+        for variable in variables: 
+            if variable not in self.kwargs:
+                self.kwargs[variable] = None
+        
+        slug = self.kwargs['slug']        
+        comment_pk = self.kwargs['pk']
+        instance = self.kwargs['instance']
+        direction = self.kwargs['direction'] 
+        
         if comment_pk == None:
             body = self.request.POST['body']
-            slug = self.kwargs['slug']
             object = PostText.objects.get(slug=slug)
             form = self.get_form()
             Comments.objects.create(thread_id=object.pk, body=body, author=self.request.user)
-        else:
+            PostText.objects.filter(slug=self.kwargs['slug']).update(comments_count = F('comments_count') +1)   
+        elif comment_pk != None and instance != None:
             body = self.request.POST['body']
-            slug = self.kwargs['slug']
-            id = self.kwargs['comment_pk']
-            instance_level = self.kwargs['instance']
-            instance_level = int(instance_level)
-            comment_object = Comments.objects.get(pk=id)
+            instance_level = int(instance)
+            comment_object = Comments.objects.get(pk=comment_pk)
             form = self.get_form()
             CommentReplies.objects.create(main_post_id=comment_object.pk, body=body, author=self.request.user, instance=instance_level+1)     
-                   
-        PostText.objects.filter(slug=self.kwargs['slug']).update(comments_count = F('comments_count') +1)              
+            PostText.objects.filter(slug=self.kwargs['slug']).update(comments_count = F('comments_count') +1)                     
+        else:
+            form = self.get_form()
+            self.voting_function(Comments, CommentReplies)            
+            return super(PostView, self).form_valid(form)
+              
         if form.is_valid():
             return super(PostView, self).form_valid(form)
         else:
@@ -156,44 +165,10 @@ class LogoutView(RedirectView):
         return self.request.META.get('HTTP_REFERER','/')
     
         
-class Voting(PreviousPageMixin, LoginRequiredMixin, SearchFormMixin, FormView):
+class Voting(Voting_function, PreviousPageMixin, LoginRequiredMixin, SearchFormMixin, FormView):
     form_class = VotingForm
     template_name = 'r/new_text_post.html'
 
     def form_valid(self, form):
-        post_pk = self.kwargs['pk']
-        direction = self.kwargs['direction']
-        post_object = PostText.objects.filter(pk=post_pk)
-        voter_object = Voter.objects.filter(vote_id=post_pk, user_id=self.request.user.id)
-        voter_object_up = Voter.objects.filter(vote_id=post_pk, user_id=self.request.user.id, voting_direction='up')
-        voter_object_down = Voter.objects.filter(vote_id=post_pk, user_id=self.request.user.id, voting_direction='down')
-        voter_object_none = Voter.objects.filter(vote_id=post_pk, user_id=self.request.user.id, voting_direction='empty')
-
-        if direction == "up" and voter_object_up.exists():      
-            post_object.update(rating=F('rating') - 1, up_votes=F('up_votes') - 1)           
-            voter_object.update(voting_direction='empty')
-        elif direction =='up' and voter_object_down.exists():
-            post_object.update(rating=F('rating') + 2, up_votes=F('up_votes') + 1, down_votes=F('down_votes') - 1)
-            voter_object.update(voting_direction='up')
-        elif direction =='up' and voter_object_none.exists():
-            post_object.update(rating=F('rating') + 1, up_votes=F('up_votes') + 1)
-            voter_object.update(voting_direction='up')
-        elif direction=="up":
-            post_object.update(rating=F('rating') + 1, up_votes=F('up_votes') + 1)
-            voted_object = Voter.objects.create(vote_id=post_pk, user_id=self.request.user.id, voting_direction=direction)
-            post_object.update(voted=voted_object)
-        elif direction=='down' and voter_object_up.exists():
-            post_object.update(rating=F('rating') - 2, down_votes=F('down_votes') + 1, up_votes=F('up_votes') - 1)
-            voter_object.update(voting_direction='down')
-        elif direction=='down' and voter_object_down.exists():
-            post_object.update(rating=F('rating') + 1, down_votes=F('down_votes') - 1)
-            voter_object.update(voting_direction='empty')
-        elif direction =='down' and voter_object_none.exists():
-            post_object.update(rating=F('rating') - 1, down_votes=F('down_votes') + 1)
-            voter_object.update(voting_direction='down')
-        elif direction=='down':
-            post_object.update(rating=F('rating') - 1, down_votes=F('down_votes') + 1)
-            voted_object = Voter.objects.create(vote_id=post_pk, user_id=self.request.user.id, voting_direction=direction)
-            post_object.update(voted=voted_object)
-                            
+        self.voting_function(PostText, None)                  
         return super(Voting, self).form_valid(form)
