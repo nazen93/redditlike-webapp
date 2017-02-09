@@ -20,7 +20,7 @@
 				<b>{{message.author}}</b>
 			</div> 
 			<b>{{message.topic}}</b>	
-			<p id="message-data">from <a href="#">{{message.author}}</a> sent {{message.date|naturaltime}}</p>
+			<p id="message-data">from <a href="{% url 'all_activity' username=message.author %}">{{message.author}}</a> sent {{message.date|naturaltime}}</p>
 			<p id="body-message"> {{message.body}} </p>
 			<p id="under-message"> <a href="{% url 'pm' user=message.author %}">reply</a>		
 	</div>			

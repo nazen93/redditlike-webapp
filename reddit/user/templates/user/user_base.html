@@ -1,0 +1,10 @@
+{% extends 'r/index.html' %}
+{% load crispy_forms_tags %}
+{% block navbar_tabs %}
+	<li><a href="{% url 'all_activity' username=user %}">overview</a></li>
+	<li><a href="{% url 'user_comments' username=user %}">comments</a></li>
+	<li><a href="{% url 'user_threads' username=user %}">submitted</a></li>
+{% endblock %}
+
+{% block content %}
+{% endblock %}

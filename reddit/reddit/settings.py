@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     #my apps
     'r',
+    'user',
     'message'
 ]
 

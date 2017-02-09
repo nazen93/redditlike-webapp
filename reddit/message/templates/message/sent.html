@@ -12,7 +12,7 @@
 	<div class="col-sm-9">
 			sent to {{message.receipent}}
 			<div class="panel panel-default" id="author-panel-sent">
-				<b>{{message.author}}</b>
+				<a href="{% url 'all_activity' username=message.author %}"><b>{{message.author}}</b></a>
 			</div> 
 			<b>{{message.topic}}</b>	
 			<p id="sent-message-body"> {{message.body}} </p>	

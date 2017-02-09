@@ -32,7 +32,7 @@
 		</div>
 		<div class="col-lg-11">
      		<h3 id="detail-post-title">{{TextPost.title}}{{LinkPosts.title}}</h3>
-     		<p id="postlist-details">submitted {{TextPost.date|naturaltime}} by <a href="#">{{TextPost.author}}</a></p>
+     		<p id="postlist-details">submitted {{TextPost.date|naturaltime}} by <a href="{% url 'all_activity' username=TextPost.author %}">{{TextPost.author}}</a></p>
      		<p>
      		<div class="panel panel-default" id="body-panel">
      			<p>{{TextPost.body}}</p>
@@ -70,7 +70,7 @@
 		</div>
 		<div class="col-lg-11">
 			<div id="comment-header">
-				<a href="#">{{comment.author}}</a> {{comment.rating}} points {{comment.date|naturaltime}}
+				<a href="{% url 'all_activity' username=comment.author %}">{{comment.author}}</a> {{comment.rating}} points {{comment.date|naturaltime}}
 			</div>
 		    <p id="comment-body">{{comment.body}}</p>
 		    <a data-toggle="collapse" href="#reply{{comment.pk}}" aria-expanded="false" aria-controls="reply{{comment.pk}}">
@@ -98,7 +98,7 @@
 				    <div class="col-lg-11" id="child-comment-column">
 					    <div id="comment-reply">
 						    <div id="comment-header">
-								<a href="#">{{reply.author}}</a> {{reply.rating}} points {{reply.date|naturaltime}}
+								<a href="{% url 'all_activity' username=reply.author %}">{{reply.author}}</a> {{reply.rating}} points {{reply.date|naturaltime}}
 							</div>
 							<p id="reply-body">{{reply.body}}</p>
 							<a data-toggle="collapse" href="#reply{{reply.pk}}" aria-expanded="false" aria-controls="reply{{reply.pk}}">

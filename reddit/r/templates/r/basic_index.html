@@ -53,7 +53,7 @@
 		{% else %}
 			<a id="postlist-title" href="{% url 'detailview' word=post.subreddit slug=post.slug %}">{{post.title}}</a>
 		{% endif %}
-			<p id="postlist-details"> dodane {{post.date|naturaltime}} przez {{post.author}} do
+			<p id="postlist-details"> added {{post.date|naturaltime}} by <a href="{% url 'all_activity' username=post.author %}">{{post.author}}</a> do
 			<a href="{% url 'category' category=post.subreddit %}">/r/{{post.subreddit}}</a></p>
 			<p id="under-post"><a href="{% url 'detailview' word=post.subreddit slug=post.slug %}">{{post.comments_count}} komentarzy</a>  <a href="#">podziel się</a>  <a href="#">zapisz</a> </p>
 	</div>			

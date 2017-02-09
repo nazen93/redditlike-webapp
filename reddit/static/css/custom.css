@@ -186,10 +186,11 @@
 	padding-right: 0;
 	margin-right: 0;
 	text-align: right;
+	width: 15px;
 	}
 
 #ratting-form > p {
-	margin-right: 5px;
+	margin-left: 4px;
 	margin-bottom: 3px;
 }
 
@@ -409,6 +410,10 @@
 	margin-top: 10px;
 }
 
+#messages-column > a {
+	color: #0000ff;
+}
+
 #author-panel {
 	margin-right: 5px;
 	background-color: #cee2f8;
@@ -531,4 +536,8 @@
 
 #child-comment-colum{
 	padding-left: 0;
+}
+
+#under-title{
+	margin-left: 10px;
 }

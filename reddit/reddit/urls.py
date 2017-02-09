@@ -21,7 +21,8 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 	url(r'^r/', include('r.urls')),
-    url(r'^message/', include('message.urls'))
+    url(r'^message/', include('message.urls')),
+    url(r'^user/', include('user.urls'))
 ]
 
 if settings.DEBUG:

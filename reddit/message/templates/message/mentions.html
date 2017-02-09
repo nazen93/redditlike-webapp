@@ -18,7 +18,7 @@
 	<div class="col-sm-9" id="post">
 			<a id="post-title" href="{{mention.thread}}">{{message.thread}}</a>
 			<p> {{mention.body}} </p>
-			<p id="postlist-date"> dodane {{mention.date|naturaltime}} przez {{mention.author}}
+			<p id="postlist-date"> dodane {{mention.date|naturaltime}} przez <a href="{% url 'all_activity' username=mention.author %}">{{mention.author}}</a>
 	</div>			
 </div>
 

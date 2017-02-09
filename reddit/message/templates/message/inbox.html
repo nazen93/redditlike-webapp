@@ -19,15 +19,15 @@
 			<b>post reply <a href="{% url 'detailview' word=message.subreddit slug=message.slug %}">{{message.title}}</a>
 			{% elif message.topic %}
 			<div class="panel panel-default" id="author-panel">
-				<b>{{message.author}}</b>
+				<a href="{% url 'all_activity' username=message.author %}"><b>{{message.author}}</b></a>
 			</div> 
 			<b>{{message.topic}}</b>	
-			<p id="message-data">from <a href="#">{{message.author}}</a> sent {{message.date|naturaltime}}</p>
+			<p id="message-data">from <a href="{% url 'all_activity' username=message.author %}">{{message.author}}</a> sent {{message.date|naturaltime}}</p>
 			<p id="body-message"> {{message.body}} </p>
 			<p id="under-message"> <a href="{% url 'pm' user=message.author %}">reply</a>			
 			{% else %}
 			<b>post reply</b> <a href="{% url 'detailview' word=message.thread.subreddit slug=message.thread.slug %}"><i>{{message.thread}}</i></</a>
-			<p id="message-data">from <a href="#">{{message.author}}</a> via <a href="{% url 'category' category=message.thread.subreddit %}">/r/{{message.thread.subreddit}}</a> sent {{message.date|naturaltime}}</p>
+			<p id="message-data">from <a href="{% url 'all_activity' username=message.author %}">{{message.author}}</a> via <a href="{% url 'category' category=message.thread.subreddit %}">/r/{{message.thread.subreddit}}</a> sent {{message.date|naturaltime}}</p>
 			<p id="body-message"> {{message.body}} </p>
 			<p id="under-message"> <a href="{% url 'detailview' word=message.thread.subreddit slug=message.thread.slug %}">full comments ({{message.thread.comments_count}})</a>
 			{% endif %}

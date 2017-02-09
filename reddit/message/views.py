@@ -39,7 +39,6 @@ class Messages(LoginRequiredMixin, ListView):
         user = self.request.user
         return PrivateMessage.objects.filter(recipient=user).order_by('-date')
     
-    
 class Sent(Messages):
     template_name = "message/sent.html"
     
