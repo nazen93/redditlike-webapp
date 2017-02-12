@@ -34,7 +34,7 @@ class ImgurThumbnail:
     
     def download_thumbnail(self, new_thumbnail, url, imgur_id):
         image = requests.get(new_thumbnail(url, imgur_id))
-        file = Image.open(BytesIO(image.content))
+        file = Image.open(BytesIO(image.content)).convert('RGB')
         file.thumbnail((70,70), Image.ANTIALIAS)
         picture_file = BytesIO()
         imgurl_id = self.imgur_imageid(url)
@@ -45,3 +45,24 @@ class ImgurThumbnail:
         file_name = settings.MEDIA_ROOT+'/'+image_name       
         file.save(file_name, 'JPEG')
         return file_name
+
+    def thumbnail_file(self, size):
+        if size == (55,55):
+            picture_path = self.image
+            print(picture_path)
+            picture_file = BytesIO(picture_path.read())
+            picture = Image.open(picture_file)
+            picture.thumbnail((size), Image.ANTIALIAS)
+            picture_file = BytesIO() 
+            picture.save(picture_file, 'JPEG')
+            return picture_file
+        else:
+            picture_path = self.image
+            picture = Image.open(picture_path)
+            picture = picture.resize((size), Image.ANTIALIAS)
+            picture_fullpath = picture_path.path
+            base = os.path.basename(picture_fullpath)
+            filename = os.path.splitext(base)[0]+'body'+'.jpg'
+            file_path = settings.MEDIA_ROOT+'/'+filename
+            picture.save(file_path, 'JPEG')
+            return file_path

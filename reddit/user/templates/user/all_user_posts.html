@@ -7,6 +7,8 @@
 
 	        {% block post_score %}
 	        <p><h3>{{user}}</h3></p>
+	        <p><div id="karma">{{thread_karma}}</div> post karma</p>
+	        <p><div id="karma"> {{comment_karma}} </div> comment karma</p>
 	        <a href="{% url 'pm' user=user %}"><p>send a private message</p></a>
 	        {% endblock %}
 	        

@@ -37,6 +37,13 @@ class PostsList(SearchFormMixin, FormMixin, ListView):
             return PostText.objects.filter(Q(body__icontains = search_data) | Q(title__icontains = search_data))
         else:
             return PostText.objects.order_by('-date')
+        
+    def get_context_data(self, *args, **kwargs):
+        context = super(PostsList, self).get_context_data(*args, **kwargs)
+        user = self.request.user
+        has_voted = Voter.objects.filter(user=user)
+        
+        return context
              
         
 class SubredditPostsList(PostsList):

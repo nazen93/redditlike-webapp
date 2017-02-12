@@ -186,7 +186,7 @@
 	padding-right: 0;
 	margin-right: 0;
 	text-align: right;
-	width: 15px;
+	width: 30px;
 	}
 
 #ratting-form > p {
@@ -540,4 +540,11 @@
 
 #under-title{
 	margin-left: 10px;
+}
+
+#karma {
+	font-size: large;
+	font-family: Verdana;
+	font-weight: bold;
+	display: inline-block;
 }

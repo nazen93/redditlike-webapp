@@ -35,7 +35,13 @@
      		<p id="postlist-details">submitted {{TextPost.date|naturaltime}} by <a href="{% url 'all_activity' username=TextPost.author %}">{{TextPost.author}}</a></p>
      		<p>
      		<div class="panel panel-default" id="body-panel">
+     			{% if not TextPost.image %}
      			<p>{{TextPost.body}}</p>
+     			{% elif 'imgur' in TextPost.body %}
+     			<img src="{{TextPost.body}}"</img>
+     			{% else %}
+     			<img src="{% static "media" %}/{{TextPost.body}}"</img>
+     			{% endif %}
      		</div>
      		</p>
      		<footer id="post-footer">

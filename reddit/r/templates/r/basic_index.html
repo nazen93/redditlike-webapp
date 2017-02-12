@@ -25,7 +25,7 @@
 <div class="row">
 	<div class="col-lg-1" id="ratting-form">
 		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
-		{% if post.voted.voting_direction == 'up' and post.voted.user.username == user.get_username %}
+		{% if has_voted in post %}
 		<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
 		{% else %}
 		<input type="image" value="submit" src="{% static "images/UpVote.png" %}">

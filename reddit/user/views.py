@@ -1,13 +1,16 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView, ListView
 
+from .mixins import UserDataMixin
+
+from .models import ThreadKarmaPoints, CommentKarmaPoints
 from r.mixins import LoginRequiredMixin, GetAuthorMixin
 from r.models import PostText, Comments, CommentReplies
 
 from itertools import chain
 # Create your views here.
 
-class AllUserPosts(TemplateView):
+class AllUserPosts(UserDataMixin, TemplateView):
     template_name = 'user/all_user_posts.html'
     
     def get_context_data(self, *args, **kwargs):
@@ -18,11 +21,10 @@ class AllUserPosts(TemplateView):
         user_replies = CommentReplies.objects.filter(author__username=user)
         combined_list = list(chain(user_threads, user_comments, user_replies))
         combined_list.sort(key=lambda i:i.date, reverse=True)
-        context['user'] = user
         context['user_activity'] = combined_list
         return context
     
-class UserComments(TemplateView):
+class UserComments(UserDataMixin, TemplateView):
     template_name = 'user/all_user_posts.html'
     
     def get_context_data(self, *args, **kwargs):
@@ -32,11 +34,10 @@ class UserComments(TemplateView):
         user_replies = CommentReplies.objects.filter(author__username=user)
         combined_list = list(chain(user_comments, user_replies))
         combined_list.sort(key=lambda i:i.date, reverse=True)
-        context['user'] = user
         context['user_activity'] = combined_list
         return context
     
-class UserThreads(ListView):
+class UserThreads(UserDataMixin, ListView):
     model = PostText
     template_name = 'user/all_user_posts.html'
     context_object_name = 'user_activity'
@@ -45,11 +46,6 @@ class UserThreads(ListView):
         user = self.kwargs['username']
         user_threads = PostText.objects.filter(author__username=user)
         return user_threads
-            
-    def get_context_data(self, *args, **kwargs):
-        context = super(UserThreads, self).get_context_data(*args, **kwargs)
-        user = self.kwargs['username']
-        context['user'] = user
-        return context
+
     
     

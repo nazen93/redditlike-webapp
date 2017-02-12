@@ -42,21 +42,8 @@ class PostText(ImgurThumbnail, models.Model):
             self.slug = slugify(self.title)  
                       
         if self.image:
-            picture_path = self.image
-            picture_file = BytesIO(picture_path.read())
-            picture = Image.open(picture_file)
-            picture_body = picture
-            
-            picture.thumbnail((55,55), Image.ANTIALIAS)
-            picture_body.resize((200,200), Image.ANTIALIAS)
-            picture_file = BytesIO()
-            body_image = 'kek.jpg'
-            file_name = settings.MEDIA_ROOT+'/'+body_image  
-            picture.save(picture_file, 'JPEG')
-            picture_body.save(file_name, 'JPEG')
-            
-            picture_path.file = picture_file
-            self.body = picture_path.file
+            self.image.file = self.thumbnail_file((55,55))
+            self.body = self.thumbnail_file((255,255))
                     
         if self.link and 'imgur' in self.link:
             picture_path = self.download_thumbnail(self.imgur_thumbnail, self.link, self.imgur_imageid)
@@ -101,12 +88,12 @@ class CommentReplies(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    posts = models.ForeignKey(PostText, null=True)
+    posts = models.ForeignKey(PostText, null=True)    
     
     def __str__(self):
         return str(self.user)
-    
 
+    
 class Voter(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     vote = models.ForeignKey(PostText, on_delete=models.CASCADE)
