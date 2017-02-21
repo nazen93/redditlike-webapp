@@ -3,14 +3,25 @@
 {% load humanize %}
 <!-- Default navbar tabs -->
 {% block navbar_tabs %}
+	{% if subreddit %}
 	<li class="active"><a href="#">hit</a></li>
 	<li><a href="#">new</a></li>
 	<li><a href="#">rising</a></li>
-	<li><a href="#">controversial</a></li>
-	<li><a href="#">top</a></li>
+	<li><a href="{% url 'subreddit_sorting' category=subreddit sorting='controversial' %}">controversial</a></li>
+	<li><a href="{% url 'subreddit_sorting' category=subreddit sorting='top' %}">top</a></li>
 	<li><a href="#">gilded</a></li>
 	<li><a href="#">wiki</a></li>
 	<li><a href="#">promoted</a></li>
+	{% else %}
+	<li class="active"><a href="#">hit</a></li>
+	<li><a href="#">new</a></li>
+	<li><a href="#">rising</a></li>
+	<li><a href="{% url 'sorting' sorting='controversial' %}">controversial</a></li>
+	<li><a href="{% url 'sorting' sorting='top' %}">top</a></li>
+	<li><a href="#">gilded</a></li>
+	<li><a href="#">wiki</a></li>
+	<li><a href="#">promoted</a></li>
+	{% endif %}
 {% endblock %}
 
 {% block title %}
@@ -23,9 +34,9 @@
 <!-- Posts list  -->
 <!-- Voting form -->
 <div class="row">
-	<div class="col-lg-1" id="ratting-form">
+	<div class="col-xs-1" id="ratting-form">
 		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
-		{% if has_voted in post %}
+		{% if post.direction == 'up' %}
 		<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
 		{% else %}
 		<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
@@ -33,11 +44,15 @@
 		</form>
 		<p>{{post.rating}}</p>
 		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='down' %}"> {% csrf_token %}
-			<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+		{% if post.direction == 'down' %}
+		<input type="image" value="submit" src="{% static "images/DownVoted.png" %}">
+		{% else %}
+		<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+		{% endif %}
 		</form>
 	</div>
 <!-- Thumbnail -->
-	<div class="col-lg-1" id="thumbnail">
+	<div class="col-xs-1" id="thumbnail">
 	{% if post.image %}
 			<img src="{% static "media/" %}{{post.image}}"/>
 	{% elif post.imgur_image %}
@@ -47,7 +62,7 @@
 	{% endif %}
 	</div>
 <!-- Post title, author, date, subreddit -->	
-	<div class="col-lg-10" id="post">
+	<div class="col-xs-10" id="post">
 		{% if not post.link == None %}
 			<a id="postlist-title" href="{{post.link}}">{{post.title}}</a>
 		{% else %}

@@ -22,6 +22,7 @@ class Voting_function:
                 post_or_reply = 'comment'
                 post_object = secondary_model_variable.objects.filter(pk=object_pk)
                 post_object2 = secondary_model_variable.objects.get(pk=object_pk)
+                
             voter_object = Voter.objects.filter(vote_id=object_pk, user_id=self.request.user.id)
             voter_object_up = Voter.objects.filter(vote_id=object_pk, user_id=self.request.user.id, voting_direction='up')
             voter_object_down = Voter.objects.filter(vote_id=object_pk, user_id=self.request.user.id, voting_direction='down')

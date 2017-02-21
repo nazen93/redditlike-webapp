@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response
 from django.urls import reverse, reverse_lazy 
 from django.views.generic import TemplateView, ListView, CreateView
 
+from r.extra import VotedUpDown
 from r.mixins import LoginRequiredMixin, GetAuthorMixin
 from r.models import PostText, Comments
 from .forms import PrivateMessageForm
@@ -14,19 +15,19 @@ from itertools import chain
 
 # Create your views here.
 
-class Inbox(LoginRequiredMixin, TemplateView):
+class Inbox(VotedUpDown, LoginRequiredMixin, TemplateView):
     template_name = 'message/inbox.html'
     
     def get_context_data(self, *args, **kwargs):
         context = super(Inbox, self).get_context_data(*args, **kwargs)
         user = self.request.user
         messages_query = PrivateMessage.objects.filter(recipient=user)
-        post_query = Comments.objects.filter(thread__author=user)
-        #post_query = PostText.objects.filter(Q(body__icontains=user) | Q(title__icontains=user))
-        comment_query = Comments.objects.filter(body__icontains=user)
+        comment_query = Comments.objects.filter(thread__author=user)
+        post_query = PostText.objects.filter(author=user)
         combined_query = list(chain(messages_query, post_query, comment_query))
-        combined_query.sort(key=lambda i:i.date, reverse=True)
-        context['inbox'] = combined_query
+        updated_queryset = self.up_or_down(combined_query)
+        updated_queryset.sort(key=lambda i:i.date, reverse=True)
+        context['inbox'] = updated_queryset
         return context
     
         

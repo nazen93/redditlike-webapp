@@ -47,22 +47,20 @@ class ImgurThumbnail:
         return file_name
 
     def thumbnail_file(self, size):
-        if size == (55,55):
-            picture_path = self.image
-            print(picture_path)
-            picture_file = BytesIO(picture_path.read())
-            picture = Image.open(picture_file)
-            picture.thumbnail((size), Image.ANTIALIAS)
-            picture_file = BytesIO() 
-            picture.save(picture_file, 'JPEG')
-            return picture_file
-        else:
-            picture_path = self.image
-            picture = Image.open(picture_path)
-            picture = picture.resize((size), Image.ANTIALIAS)
+        picture_path = self.image
+        picture_path.seek(0)
+        picture_file = BytesIO(picture_path.read())
+        picture = Image.open(picture_file)
+        if size == (255, 255):
+            picture = picture.resize(size, Image.ANTIALIAS)
             picture_fullpath = picture_path.path
             base = os.path.basename(picture_fullpath)
-            filename = os.path.splitext(base)[0]+'body'+'.jpg'
+            filename = os.path.splitext(base)[0]+'body.jpg'
             file_path = settings.MEDIA_ROOT+'/'+filename
             picture.save(file_path, 'JPEG')
             return file_path
+        else:
+            picture.thumbnail(size, Image.ANTIALIAS)
+            picture_file = BytesIO()
+            picture.save(picture_file, 'JPEG')
+            return picture_file

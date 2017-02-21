@@ -23,11 +23,19 @@
 		<!-- Post voting form -->
 		<div class="col-lg-1" id="detail-ratting-form">
 			<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='up' %}"> {% csrf_token %}
+				{% if TextPost.direction == 'up' %}
+				<input type="image" value="submit" src="{% static "images/arrow-up-voted.png" %}">
+				{% else %}
 				<input type="image" value="submit" src="{% static "images/arrow-up.png" %}">
+				{% endif %}
 			</form>
 			<p>{{TextPost.rating}}</p>
 			<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='down' %}"> {% csrf_token %}
+				{% if TextPost.direction == 'down' %}
+				<input type="image" value="submit" src="{% static "images/arrow-down-voted.png" %}">
+				{% else %}
 				<input type="image" value="submit" src="{% static "images/arrow-down.png" %}">
+				{% endif %}
 			</form>
 		</div>
 		<div class="col-lg-11">
@@ -46,6 +54,7 @@
      		</p>
      		<footer id="post-footer">
      		<a href="{% url 'detailview' word=TextPost.subreddit slug=TextPost.slug %}">{{TextPost.comments_count}} comments</a> 
+     		<a href="{% url 'update_post' word=TextPost.subreddit slug=TextPost.slug pk=TextPost.pk %}">edit</a>
      		<a href="#">share</a>
      		<a href="#">save</a>
      		<a href="#">report</a>
@@ -68,10 +77,18 @@
     	<!-- Main comment voting form -->
     	<div class="col-lg-1" id="main-comment-ratting-form">
 			<form method="POST" action="{% url 'comment_voting' word=TextPost.subreddit.name slug=TextPost.slug pk=comment.pk direction="up" %}"> {% csrf_token %}
-				<input type="image" value="submit" src="{% static "images/arrow-up-xsmall.png" %}">
+				{% if comment.direction == 'up' %}
+				<input type="image" value="submit" src="{% static "images/arrow-up-voted.png" %}">
+				{% else %}
+				<input type="image" value="submit" src="{% static "images/arrow-up.png" %}">
+				{% endif %}
 			</form>
 			<form method="POST" action="{% url 'comment_voting' word=TextPost.subreddit slug=TextPost.slug pk=comment.pk direction='down' %}"> {% csrf_token %}
-				<input type="image" value="submit" src="{% static "images/arrow-down-xsmall.png" %}">
+				{% if comment.direction == 'down' %}
+				<input type="image" value="submit" src="{% static "images/arrow-down-voted.png" %}">
+				{% else %}
+				<input type="image" value="submit" src="{% static "images/arrow-down.png" %}">
+				{% endif %}
 			</form>
 		</div>
 		<div class="col-lg-11">
@@ -80,7 +97,9 @@
 			</div>
 		    <p id="comment-body">{{comment.body}}</p>
 		    <a data-toggle="collapse" href="#reply{{comment.pk}}" aria-expanded="false" aria-controls="reply{{comment.pk}}">
-  			<p id="reply-button">reply</p>
+  			<div id="reply-button">reply
+  			<a href="{% url 'update_comment' word=TextPost.subreddit slug=TextPost.slug pk=comment.pk %}">edit</a>
+  			</div>
   			</a>
   			<div class="collapse" id="reply{{comment.pk}}">
 			   	 <form method="POST" action="{% url 'comment_reply' word=TextPost.subreddit.name slug=TextPost.slug pk=comment.id instance=comment.default_instance %}">
@@ -95,10 +114,18 @@
 			    <!-- Child comment voting form -->
 					<div class="col-lg-1" id="main-comment-ratting-form">
 						<form method="POST" action="{% url 'comment_voting' word=TextPost.subreddit slug=TextPost.slug pk=reply.pk direction='up' %}"> {% csrf_token %}
-							<input type="image" value="submit" src="{% static "images/arrow-up-xsmall.png" %}">
+							{% if reply.direction == 'up' %}
+							<input type="image" value="submit" src="{% static "images/arrow-up-voted.png" %}">
+							{% else %}
+							<input type="image" value="submit" src="{% static "images/arrow-up.png" %}">
+							{% endif %}
 						</form>
 						<form method="POST" action="{% url 'comment_voting' word=TextPost.subreddit slug=TextPost.slug pk=reply.pk direction='down' %}"> {% csrf_token %}
-							<input type="image" value="submit" src="{% static "images/arrow-down-xsmall.png" %}">
+							{% if reply.direction == 'down' %}
+							<input type="image" value="submit" src="{% static "images/arrow-down-voted.png" %}">
+							{% else %}
+							<input type="image" value="submit" src="{% static "images/arrow-down.png" %}">
+							{% endif %}
 						</form>
 					</div>
 				    <div class="col-lg-11" id="child-comment-column">
@@ -108,8 +135,11 @@
 							</div>
 							<p id="reply-body">{{reply.body}}</p>
 							<a data-toggle="collapse" href="#reply{{reply.pk}}" aria-expanded="false" aria-controls="reply{{reply.pk}}">
-							<p id="reply-button">reply</p>
+							<div id="reply-button">reply
+							<a href="{% url 'update_post' word=TextPost.subreddit slug=TextPost.slug pk=reply.pk %}">edit</a>
+							</div>
 							</a>
+							
 							<div class="collapse" id="reply{{reply.pk}}">
 							   	 <form method="POST" action="{% url 'comment_reply' word=TextPost.subreddit.name slug=TextPost.slug pk=comment.id instance=reply.instance %}">
 							         {% csrf_token %}
