@@ -47,12 +47,14 @@ class Sent(Messages):
         user = self.request.user
         return PrivateMessage.objects.filter(author=user).order_by('-date')
     
-class PostReplies(Messages):
+class PostReplies(VotedUpDown, Messages):
     template_name = "message/post_replies.html"
     
     def get_queryset(self):
         user = self.request.user
-        return Comments.objects.filter(thread__author=user).order_by('-date')
+        queryset = Comments.objects.filter(thread__author=user).order_by('-date')
+        updated_queryset = self.up_or_down(queryset)
+        return updated_queryset
     
     
 class Mentions(LoginRequiredMixin, ListView):

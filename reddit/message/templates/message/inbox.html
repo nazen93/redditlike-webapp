@@ -14,7 +14,7 @@
     	</ul>   	
 {% for message in inbox %}
 <div class="row">	
-	<div class="col-lg-9" id="inbox-all">
+	<div class="col-xs-9" id="inbox-all">
 		{% if message.title %}
 			<b>post reply</b> <a href="{% url 'detailview' word=message.subreddit slug=message.slug %}"><i>{{message.title}}</i></</a>
 			<div class="row">
