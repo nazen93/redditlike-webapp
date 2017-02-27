@@ -22,20 +22,32 @@
 	<div class="row">
 		<!-- Post voting form -->
 		<div class="col-lg-1" id="detail-ratting-form">
-			<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='up' %}"> {% csrf_token %}
-				{% if TextPost.direction == 'up' %}
+			{% if user.is_authenticated %}
+				<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='up' %}"> {% csrf_token %}
+			{% endif %}
+			{% if TextPost.direction == 'up' %}
 				<input type="image" value="submit" src="{% static "images/arrow-up-voted.png" %}">
+			{% else %}
+				{% if user.is_authenticated %}
+					<input type="image" value="submit" src="{% static "images/arrow-up.png" %}">
 				{% else %}
-				<input type="image" value="submit" src="{% static "images/arrow-up.png" %}">
-				{% endif %}
+					<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/arrow-up.png" %}">
+				{% endif %}	
+			{% endif %}
 			</form>
 			<p>{{TextPost.rating}}</p>
-			<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='down' %}"> {% csrf_token %}
-				{% if TextPost.direction == 'down' %}
+			{% if user.is_authenticated %}
+				<form method="POST" action="{% url 'voting' word=TextPost.subreddit pk=TextPost.pk direction='down' %}"> {% csrf_token %}
+			{% endif %}
+			{% if TextPost.direction == 'down' %}
 				<input type="image" value="submit" src="{% static "images/arrow-down-voted.png" %}">
-				{% else %}
+			{% else %}
+				{% if user.is_authenticated %}
 				<input type="image" value="submit" src="{% static "images/arrow-down.png" %}">
-				{% endif %}
+				{% else %}
+					<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/arrow-down.png" %}">
+				{% endif %}	
+			{% endif %}
 			</form>
 		</div>
 		<div class="col-lg-11">
@@ -76,19 +88,31 @@
     <div class="row" id="comment-row">
     	<!-- Main comment voting form -->
     	<div class="col-lg-1" id="main-comment-ratting-form">
+    	{% if user.is_authenticated %}
 			<form method="POST" action="{% url 'comment_voting' word=TextPost.subreddit.name slug=TextPost.slug pk=comment.pk direction="up" %}"> {% csrf_token %}
-				{% if comment.direction == 'up' %}
-				<input type="image" value="submit" src="{% static "images/arrow-up-voted.png" %}">
-				{% else %}
+		{% endif %}
+		{% if comment.direction == 'up' %}
+			<input type="image" value="submit" src="{% static "images/arrow-up-voted.png" %}">
+		{% else %}
+			{% if user.is_authenticated %}
 				<input type="image" value="submit" src="{% static "images/arrow-up.png" %}">
-				{% endif %}
+			{% else %}
+				<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/arrow-up.png" %}">
+			{% endif %}
+		{% endif %}
 			</form>
+		{% if user.is_authenticated %}
 			<form method="POST" action="{% url 'comment_voting' word=TextPost.subreddit slug=TextPost.slug pk=comment.pk direction='down' %}"> {% csrf_token %}
-				{% if comment.direction == 'down' %}
-				<input type="image" value="submit" src="{% static "images/arrow-down-voted.png" %}">
-				{% else %}
+		{% endif %}		
+		{% if comment.direction == 'down' %}
+			<input type="image" value="submit" src="{% static "images/arrow-down-voted.png" %}">
+		{% else %}
+			{% if user.is_authenticated %}
 				<input type="image" value="submit" src="{% static "images/arrow-down.png" %}">
-				{% endif %}
+			{% else %}
+				<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/arrow-down.png" %}">
+			{% endif %}	
+		{% endif %}
 			</form>
 		</div>
 		<div class="col-lg-11">
@@ -113,19 +137,31 @@
 			    <div class="row"  style="margin-left:{{reply.padding}}px;">
 			    <!-- Child comment voting form -->
 					<div class="col-lg-1" id="main-comment-ratting-form">
+					{% if user.is_authenticated %}
 						<form method="POST" action="{% url 'comment_voting' word=TextPost.subreddit slug=TextPost.slug pk=reply.pk direction='up' %}"> {% csrf_token %}
-							{% if reply.direction == 'up' %}
-							<input type="image" value="submit" src="{% static "images/arrow-up-voted.png" %}">
-							{% else %}
+					{% endif %}
+					{% if reply.direction == 'up' %}
+						<input type="image" value="submit" src="{% static "images/arrow-up-voted.png" %}">
+					{% else %}
+						{% if user.is_authenticated %}
 							<input type="image" value="submit" src="{% static "images/arrow-up.png" %}">
-							{% endif %}
+						{% else %}
+							<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/arrow-up.png" %}">
+						{% endif %}
+					{% endif %}
 						</form>
+					{% if user.is_authenticated %}
 						<form method="POST" action="{% url 'comment_voting' word=TextPost.subreddit slug=TextPost.slug pk=reply.pk direction='down' %}"> {% csrf_token %}
-							{% if reply.direction == 'down' %}
-							<input type="image" value="submit" src="{% static "images/arrow-down-voted.png" %}">
-							{% else %}
+					{% endif %}					
+					{% if reply.direction == 'down' %}
+						<input type="image" value="submit" src="{% static "images/arrow-down-voted.png" %}">
+					{% else %}
+						{% if user.is_authenticated %}
 							<input type="image" value="submit" src="{% static "images/arrow-down.png" %}">
-							{% endif %}
+						{% else %}
+							<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/arrow-down.png" %}">
+						{% endif %}
+					{% endif %}
 						</form>
 					</div>
 				    <div class="col-lg-11" id="child-comment-column">

@@ -29,11 +29,11 @@ class PostText(ImgurThumbnail, models.Model):
     image = models.ImageField(null=True, blank=True)
     body = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
     up_votes = models.IntegerField(default=0, editable=False)
     down_votes = models.IntegerField(default=0, editable=False)
     rating = models.IntegerField(default=0, editable=False)
     author = models.ForeignKey(User, null=True, editable=False)
-    voted = models.ForeignKey('Voter', null=True)
     comments_count = models.IntegerField(default=0, editable=False)
     subreddit = models.ForeignKey(SubForum)        
 

@@ -2,7 +2,7 @@ from .models import PostText, Voter
 
 class VotedUpDown:
     '''
-    Takes filtered queryset as an argument and checks if Voter object for the given record exists, if positive then adds direction attrubite (eihter "up" or "down") to the record. Returns updated queryset.
+    Takes given queryset as an argument and checks if Voter object for the given record exists, if positive then adds direction attrubite (eihter "up" or "down") to the record. Returns updated queryset.
     '''    
     def up_or_down(self, queryset):
         try:

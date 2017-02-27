@@ -4,11 +4,23 @@
 <!-- Default navbar tabs -->
 {% block navbar_tabs %}
 	{% if subreddit %}
+	{% if not sorting %}
 	<li class="active"><a href="#">hit</a></li>
+	{% else %}
+	<li><a href="#">hit</a></li>
+	{% endif %}
 	<li><a href="#">new</a></li>
 	<li><a href="#">rising</a></li>
+	{% if sorting == 'controversial' %}
+	<li class="active"><a href="{% url 'subreddit_sorting' category=subreddit sorting='controversial' %}">controversial</a></li>
+	{% else %}
 	<li><a href="{% url 'subreddit_sorting' category=subreddit sorting='controversial' %}">controversial</a></li>
+	{% endif %}
+	{% if sorting == 'top' %}
+	<li class="active"><a href="{% url 'subreddit_sorting' category=subreddit sorting='top' %}">top</a></li>
+	{% else %}
 	<li><a href="{% url 'subreddit_sorting' category=subreddit sorting='top' %}">top</a></li>
+	{% endif %}
 	<li><a href="#">gilded</a></li>
 	<li><a href="#">wiki</a></li>
 	<li><a href="#">promoted</a></li>
@@ -35,19 +47,31 @@
 <!-- Voting form -->
 <div class="row">
 	<div class="col-xs-1" id="ratting-form">
-		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
+		{% if user.is_authenticated %}
+			<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
+		{% endif %}
 		{% if post.direction == 'up' %}
-		<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
+			<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
 		{% else %}
-		<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
+			{% if user.is_authenticated %}
+				<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
+			{% else %}
+				<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/UpVote.png" %}">
+			{% endif %}
 		{% endif %}
 		</form>
 		<p>{{post.rating}}</p>
-		<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='down' %}"> {% csrf_token %}
+		{% if user.is_authenticated %}
+			<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='down' %}"> {% csrf_token %}
+		{% endif %}
 		{% if post.direction == 'down' %}
-		<input type="image" value="submit" src="{% static "images/DownVoted.png" %}">
-		{% else %}
-		<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+			<input type="image" value="submit" src="{% static "images/DownVoted.png" %}">
+			{% else %}
+				{% if user.is_authenticated %}
+					<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+				{% else %}
+					<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/DownVote.png" %}">
+				{% endif %}
 		{% endif %}
 		</form>
 	</div>

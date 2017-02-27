@@ -2,14 +2,14 @@
 {% load static %}
 
 {% block title %}
-<title>profil {{user}}</title>
+<title>profil {{current_user}}</title>
 {% endblock %}
 
 	        {% block post_score %}
-	        <p><h3>{{user}}</h3></p>
+	        <p><h3>{{current_user}}</h3></p>
 	        <p><div id="karma">{{thread_karma}}</div> post karma</p>
 	        <p><div id="karma"> {{comment_karma}} </div> comment karma</p>
-	        <a href="{% url 'pm' user=user %}"><p>send a private message</p></a>
+	        <a href="{% url 'pm' user=current_user %}"><p>send a private message</p></a>
 	        {% endblock %}
 	        
 {% block content %}
@@ -18,20 +18,32 @@
 	{% if post.title %}
 		<div class="row" id="inbox-all">
 			<div class="col-xs-1" id="ratting-form">
+			{% if user.is_authenticated %}
 				<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
-					{% if post.direction == 'up' %}
-					<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
-					{% else %}
+			{% endif %}
+			{% if post.direction == 'up' %}
+				<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
+			{% else %}
+				{% if user.is_authenticated %}
 					<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
-					{% endif %}
+				{% else %}
+					<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/UpVote.png" %}">
+				{% endif %}
+			{% endif %}
 				</form>
-				<p>{{post.rating}}</p>				
+				<p>{{post.rating}}</p>		
+				{% if user.is_authenticated %}		
 				<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='down' %}"> {% csrf_token %}
-					{% if post.direction == 'down' %}
+				{% endif %}
+				{% if post.direction == 'down' %}
 					<input type="image" value="submit" src="{% static "images/DownVoted.png" %}">
+				{% else %}
+					{% if user.is_authenticated %}
+						<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
 					{% else %}
-					<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+						<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/DownVote.png" %}">
 					{% endif %}
+				{% endif %}
 				</form>
 			</div>
 		<!-- Thumbnail -->
@@ -62,19 +74,31 @@
 				<a href="{% url 'detailview' word=post.thread.subreddit slug=post.thread.slug %}"><i>{{post.thread}}</i></</a>
 				<div class="row">	
 					<div class="col-xs-1" id="ratting-form-inbox">	
+					{% if user.is_authenticated %}
 						<form method="POST" action="{% url 'voting' word=post.thread.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
-							{% if post.direction == 'up' %}
-							<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
-							{% else %}
+					{% endif %}
+					{% if post.direction == 'up' %}
+						<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
+					{% else %}
+						{% if user.is_authenticated %}
 							<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
-							{% endif %}
+						{% else %}
+							<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/UpVote.png" %}">
+						{% endif %}
+					{% endif %}
 						</form>
-						<form method="POST" action="{% url 'voting' word=post.thread.subreddit pk=post.pk direction='down' %}"> {% csrf_token %}
-							{% if post.direction == 'down' %}
+						{% if user.is_authenticated %}
+							<form method="POST" action="{% url 'voting' word=post.thread.subreddit pk=post.pk direction='down' %}"> {% csrf_token %}
+						{% endif %}
+						{% if post.direction == 'down' %}
 							<input type="image" value="submit" src="{% static "images/DownVoted.png" %}">
+						{% else %}
+							{% if user.is_authenticated %}
+								<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
 							{% else %}
-							<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+								<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/DownVote.png" %}">
 							{% endif %}
+						{% endif %}
 						</form>
 					</div>
 					<div class="col-xs-11">
@@ -88,22 +112,34 @@
 	{% elif post.main_post %}
 		<div class="row">	
 			<div class="col-xs-12" id="inbox-all">
-				<a href="{% url 'detailview' word=post.main_post.thread.subreddit slug=post.main_post.thread.slug %}"><i>{{post.main_post.thread}}</i></</a>
+				<a href="{% url 'detailview' word=post.main_post.thread.subreddit slug=post.main_post.thread.slug %}"><i>{{post.main_post.thread}}</i></a>
 				<div class="row">
 					<div class="col-xs-1" id="ratting-form-inbox">	
-						<form method="POST" action="{% url 'voting' word=post.main_post.thread.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
-							{% if post.direction == 'up' %}
+						{% if user.is_authenticated %}
+							<form method="POST" action="{% url 'voting' word=post.main_post.thread.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
+						{% endif %}
+						{% if post.direction == 'up' %}
 							<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
+						{% else %}
+							{% if user.is_authenticated %}
+								<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
 							{% else %}
-							<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
+								<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/UpVote.png" %}">
 							{% endif %}
+						{% endif %}
 						</form>
-						<form method="POST" action="{% url 'voting' word=post.main_post.thread.subreddit pk=post.pk direction='down' %}"> {% csrf_token %}
-							{% if post.direction == 'down' %}
+						{% if user.is_authenticated %}
+							<form method="POST" action="{% url 'voting' word=post.main_post.thread.subreddit pk=post.pk direction='down' %}"> {% csrf_token %}
+						{% endif %}
+						{% if post.direction == 'down' %}
 							<input type="image" value="submit" src="{% static "images/DownVoted.png" %}">
+						{% else %}
+							{% if user.is_authenticated %}
+								<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
 							{% else %}
-							<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+								<input type="image" data-toggle="modal" href="#modal-1" src="{% static "images/DownVote.png" %}">
 							{% endif %}
+						{% endif %}
 						</form>
 					</div>				
 					<div class="col-xs-11">

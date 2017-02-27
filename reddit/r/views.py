@@ -39,7 +39,7 @@ class PostsList(VotedUpDown, SearchFormMixin, FormMixin, ListView):
             updated_queryset = self.up_or_down(all_objects)
             return updated_queryset
         else:
-            all_objects = PostText.objects.order_by('-date')
+            all_objects = PostText.objects.filter(is_active=True).order_by('-date')
             updated_queryset = self.up_or_down(all_objects)
             return updated_queryset
 
@@ -49,11 +49,11 @@ class SortedPostsList(PostsList):
     def get_queryset(self, **kwargs):
         sorting = self.kwargs['sorting']
         if sorting == 'top':
-            sorted_queryset = PostText.objects.order_by('-rating')
+            sorted_queryset = PostText.objects.filter(is_active=True).order_by('-rating')
             updated_queryset = self.up_or_down(sorted_queryset)
             return updated_queryset
         elif sorting == "controversial":
-            sorted_queryset = PostText.objects.order_by('-comments_count')
+            sorted_queryset = PostText.objects.filter(is_active=True).order_by('-comments_count')
             updated_queryset = self.up_or_down(sorted_queryset)
             return updated_queryset  
         
@@ -62,7 +62,7 @@ class SubredditPostsList(PostsList):
         
     def get_queryset(self):
         category = self.kwargs['category']
-        all_objects = PostText.objects.filter(subreddit__name=category).order_by('-date')
+        all_objects = PostText.objects.filter(is_active=True, subreddit__name=category).order_by('-date')
         updated_queryset = self.up_or_down(all_objects)
         return updated_queryset
     
@@ -77,14 +77,21 @@ class SortedSubRedditList(SubredditPostsList):
     def get_queryset(self, **kwargs):
         category = self.kwargs['category']
         sorting = self.kwargs['sorting']
-        subreddit_objects = PostText.objects.filter(subreddit__name=category)
+        subreddit_objects = PostText.objects.filter(is_active=True, subreddit__name=category)
         if sorting == 'top':
-            sorted_queryset = PostText.objects.filter(subreddit__name=category).order_by('-rating')
-            return sorted_queryset
+            sorted_queryset = subreddit_objects.order_by('-rating')
+            updated_queryset = self.up_or_down(sorted_queryset)
+            return updated_queryset
         elif sorting == "controversial":
-            sorted_queryset = PostText.objects.filter(subreddit__name=category).order_by('-comments_count')
-            return sorted_queryset  
+            sorted_queryset = subreddit_objects.order_by('-comments_count')
+            updated_queryset = self.up_or_down(sorted_queryset)
+            return updated_queryset  
     
+    def get_context_data(self, *args, **kwargs):
+        context = super(SortedSubRedditList, self).get_context_data(*args, **kwargs)
+        sorting = self.kwargs['sorting']
+        context['sorting'] = sorting
+        return context
             
 class PostView(VotedUpDown, Voting_function, PreviousPageMixin, SearchFormMixin, FormMixin, DetailView):
     model = PostText
@@ -111,7 +118,7 @@ class PostView(VotedUpDown, Voting_function, PreviousPageMixin, SearchFormMixin,
             object.average = up_votes/all_votes*100
             object.average = int(object.average)
             if object.average < 0:
-                object.average=0                
+                object.average = 0                
         return object 
     
     def post(self, request, *args, **kwargs):
@@ -150,25 +157,25 @@ class PostView(VotedUpDown, Voting_function, PreviousPageMixin, SearchFormMixin,
  
     def get_context_data(self, **kwargs):
         context = super(PostView, self).get_context_data()
-        try:
-            slug = self.kwargs['slug']
-            user = self.request.user
-            post_object = PostText.objects.get(slug=slug)
-            comments = Comments.objects.filter(thread_id=post_object.pk).order_by('date')
-            for comment in comments:
-                if Voter.objects.filter(user=user, vote_id=comment.pk, voting_direction="up").exists():
-                    comment.direction = 'up'
-                elif Voter.objects.filter(user=user, vote_id=comment.pk, voting_direction="down").exists():
-                    comment.direction = 'down'  
-                comment.child = CommentReplies.objects.filter(main_post_id=comment.pk).order_by('instance')
-                for reply in comment.child:
-                    if Voter.objects.filter(user=user, vote_id=reply.pk, voting_direction="up").exists():
-                        reply.direction = 'up'
-                    elif Voter.objects.filter(user=user, vote_id=reply.pk, voting_direction="down").exists():
-                        reply.direction = 'down'  
-                    reply.padding = reply.instance * 25
-        except:
-            pass
+        user = self.request.user
+        if str(user) == 'AnonymousUser':
+            user = None
+        slug = self.kwargs['slug']
+        post_object = PostText.objects.get(slug=slug)
+        comments = Comments.objects.filter(thread_id=post_object.pk).order_by('date')
+        for comment in comments:
+            if Voter.objects.filter(user=user, vote_id=comment.pk, voting_direction="up").exists():
+                comment.direction = 'up'
+            elif Voter.objects.filter(user=user, vote_id=comment.pk, voting_direction="down").exists():
+                comment.direction = 'down'  
+            comment.child = CommentReplies.objects.filter(main_post_id=comment.pk).order_by('instance')
+            for reply in comment.child:
+                if Voter.objects.filter(user=user, vote_id=reply.pk, voting_direction="up").exists():
+                    reply.direction = 'up'
+                elif Voter.objects.filter(user=user, vote_id=reply.pk, voting_direction="down").exists():
+                    reply.direction = 'down'  
+                reply.padding = reply.instance * 25
+
         context['comments'] = comments
         return context
 

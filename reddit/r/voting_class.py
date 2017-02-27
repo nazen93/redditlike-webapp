@@ -13,10 +13,9 @@ class Voting_function:
             post_object = primary_model_variable.objects.filter(pk=object_pk)
             if post_object: #checks if the primary_model queryset is not empty, if False, then it assigns secondary_model_variable to post_object
                 post_object2 = primary_model_variable.objects.get(pk=object_pk)
-                try:
-                    if post_object2.title: 
-                        post_or_reply = 'thread'       
-                except AttributeError:
+                if hasattr(post_object2, 'title'): 
+                    post_or_reply = 'thread'   
+                else:    
                     post_or_reply = 'comment'
             else:
                 post_or_reply = 'comment'
@@ -56,7 +55,7 @@ class Voting_function:
                     
             elif direction=="up":
                 post_object.update(rating=F('rating') + 1, up_votes=F('up_votes') + 1)
-                voted_object = Voter.objects.create(vote_id=object_pk, user_id=self.request.user.id, voting_direction=direction)                                
+                voted_object = Voter.objects.create(vote_id=post_object2.id, user_id=self.request.user.id, voting_direction=direction)                                
                 if not thread_karma.exists() and post_or_reply == 'thread':
                     ThreadKarmaPoints.objects.create(user=post_object2.author, voter=self.request.user, has_voted=True)
                 elif not comment_karma.exists() and post_or_reply =='comment':
@@ -79,7 +78,7 @@ class Voting_function:
                 
             elif direction=='down':
                 post_object.update(rating=F('rating') - 1, down_votes=F('down_votes') + 1)
-                voted_object = Voter.objects.create(vote_id=object_pk, user_id=self.request.user.id, voting_direction=direction)
+                voted_object = Voter.objects.create(vote_id=post_object2.id, user_id=self.request.user.id, voting_direction=direction)
                 if not thread_karma.exists() and post_or_reply == 'thread':
                     ThreadKarmaPoints.objects.create(user=post_object2.author, voter=self.request.user, has_voted=False)
                 elif not comment_karma.exists() and post_or_reply =='comment':
