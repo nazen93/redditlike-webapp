@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q, F, Value
 from django.db.models.functions import Concat
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse_lazy, reverse
 from django.utils.http import is_safe_url
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView, RedirectView
@@ -17,6 +17,7 @@ from .mixins import NewPostSuccessURLMixin, GetAuthorMixin, SearchFormMixin, Log
 from .models import SubForum, PostText, UserProfile, Voter, Comments, CommentReplies
 from .voting_class import Voting_function
 
+from datetime import date, datetime, timezone
 from io import StringIO
 from itertools import chain
 from PIL import Image
@@ -62,8 +63,8 @@ class SubredditPostsList(PostsList):
         
     def get_queryset(self):
         category = self.kwargs['category']
-        all_objects = PostText.objects.filter(is_active=True, subreddit__name=category).order_by('-date')
-        updated_queryset = self.up_or_down(all_objects)
+        category_or_404 = get_list_or_404(PostText.objects.order_by('-date'), subreddit__name=category)
+        updated_queryset = self.up_or_down(category_or_404)
         return updated_queryset
     
     def get_context_data(self, *args, **kwargs):
@@ -77,6 +78,7 @@ class SortedSubRedditList(SubredditPostsList):
     def get_queryset(self, **kwargs):
         category = self.kwargs['category']
         sorting = self.kwargs['sorting']
+        category_or_404 = get_list_or_404(PostText, subreddit__name=category)
         subreddit_objects = PostText.objects.filter(is_active=True, subreddit__name=category)
         if sorting == 'top':
             sorted_queryset = subreddit_objects.order_by('-rating')
@@ -103,6 +105,11 @@ class PostView(VotedUpDown, Voting_function, PreviousPageMixin, SearchFormMixin,
         object = super(PostView, self).get_object()
         try:
             user = self.request.user
+            current_date = datetime.now(timezone.utc)
+            print(current_date)
+            print(object.date)
+            current_date = current_date-object.date
+            print(current_date.days)
             if Voter.objects.filter(user=user, vote_id=object.pk, voting_direction="up").exists():
                 object.direction = 'up'
             elif Voter.objects.filter(user=user, vote_id=object.pk, voting_direction="down").exists():

@@ -71,7 +71,7 @@
 	{% elif post.thread %}
 		<div class="row">	
 			<div class="col-xs-12" id="inbox-all">
-				<a href="{% url 'detailview' word=post.thread.subreddit slug=post.thread.slug %}"><i>{{post.thread}}</i></</a>
+				<a href="{% url 'detailview' word=post.thread.subreddit slug=post.thread.slug %}"><i>{{post.thread}}</i></a>
 				<div class="row">	
 					<div class="col-xs-1" id="ratting-form-inbox">	
 					{% if user.is_authenticated %}

@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView, ListView
+
 
 from .mixins import UserDataMixin
 
@@ -19,6 +21,7 @@ class AllUserPosts(SearchFormMixin, VotedUpDown, UserDataMixin, ListView):
     
     def get_queryset(self, **kwargs):
         current_user = self.kwargs['username']
+        user_or_404 = get_object_or_404(User, username=current_user)
         user_threads = PostText.objects.filter(author__username=current_user)
         user_comments = Comments.objects.filter(author__username=current_user)
         user_replies = CommentReplies.objects.filter(author__username=current_user)
@@ -31,6 +34,7 @@ class UserComments(AllUserPosts):
     
     def get_queryset(self, **kwargs):
         current_user = self.kwargs['username']
+        user_or_404 = get_object_or_404(User, username=current_user)
         user_comments = Comments.objects.filter(author__username=current_user)
         user_replies = CommentReplies.objects.filter(author__username=current_user)
         combined_list = list(chain(user_comments, user_replies))
@@ -42,6 +46,7 @@ class UserThreads(AllUserPosts):
     
     def get_queryset(self, **kwargs):
         current_user = self.kwargs['username']
+        user_or_404 = get_object_or_404(User, username=current_user)
         user_threads = PostText.objects.filter(author__username=current_user)
         updated_queryset = self.up_or_down(user_threads)
         return updated_queryset

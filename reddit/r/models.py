@@ -44,6 +44,7 @@ class PostText(ImgurThumbnail, models.Model):
         if self.image:  
             self.body = self.thumbnail_file((255,255))
             self.image.file = self.thumbnail_file((55,55))
+            
         if self.link and 'imgur' in self.link:
             picture_path = self.download_thumbnail(self.imgur_thumbnail, self.link, self.imgur_imageid)
             fullsize_picture_path = self.imgur_thumbnail(self.link, self.imgur_imageid)            
