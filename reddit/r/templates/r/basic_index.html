@@ -4,35 +4,63 @@
 <!-- Default navbar tabs -->
 {% block navbar_tabs %}
 	{% if subreddit %}
-	{% if not sorting %}
-	<li class="active"><a href="#">hit</a></li>
+	
+		{% if not sorting %}
+			<li class="active"><a href="#">hit</a></li>
+		{% else %}
+			<li><a href="#">hit</a></li>
+		{% endif %}
+		
+		<li><a href="#">new</a></li>
+		<li><a href="{% url 'subreddit_sorting' category=subreddit sorting='rising' %}">rising</a></li>
+		{% if sorting == 'controversial' %}
+			<li class="active"><a href="{% url 'subreddit_sorting' category=subreddit sorting='controversial' %}">controversial</a></li>
+		{% else %}
+			<li><a href="{% url 'subreddit_sorting' category=subreddit sorting='controversial' %}">controversial</a></li>
+		{% endif %}
+		
+		{% if sorting == 'top' %}
+			<li class="active"><a href="{% url 'subreddit_sorting' category=subreddit sorting='top' %}">top</a></li>
+		{% else %}
+			<li><a href="{% url 'subreddit_sorting' category=subreddit sorting='top' %}">top</a></li>
+		{% endif %}
+		<li><a href="#">gilded</a></li>
+		<li><a href="#">wiki</a></li>
+		<li><a href="{% url 'subreddit_sorting' category=subreddit sorting='promoted' %}">promoted</a></li>
+		
 	{% else %}
-	<li><a href="#">hit</a></li>
-	{% endif %}
-	<li><a href="#">new</a></li>
-	<li><a href="#">rising</a></li>
-	{% if sorting == 'controversial' %}
-	<li class="active"><a href="{% url 'subreddit_sorting' category=subreddit sorting='controversial' %}">controversial</a></li>
-	{% else %}
-	<li><a href="{% url 'subreddit_sorting' category=subreddit sorting='controversial' %}">controversial</a></li>
-	{% endif %}
-	{% if sorting == 'top' %}
-	<li class="active"><a href="{% url 'subreddit_sorting' category=subreddit sorting='top' %}">top</a></li>
-	{% else %}
-	<li><a href="{% url 'subreddit_sorting' category=subreddit sorting='top' %}">top</a></li>
-	{% endif %}
-	<li><a href="#">gilded</a></li>
-	<li><a href="#">wiki</a></li>
-	<li><a href="#">promoted</a></li>
-	{% else %}
-	<li class="active"><a href="#">hit</a></li>
-	<li><a href="#">new</a></li>
-	<li><a href="#">rising</a></li>
-	<li><a href="{% url 'sorting' sorting='controversial' %}">controversial</a></li>
-	<li><a href="{% url 'sorting' sorting='top' %}">top</a></li>
-	<li><a href="#">gilded</a></li>
-	<li><a href="#">wiki</a></li>
-	<li><a href="#">promoted</a></li>
+	
+		{% if not sorting %}
+			<li class="active"><a href="#">hit</a></li>
+		{% else %}
+			<li><a href="#">hit</a></li>
+		{% endif %}
+		<li><a href="#">new</a></li>
+		{% if sorting == "rising" %}
+			<li class="active"><a href="{% url 'sorting' sorting='rising' %}">rising</a></li>
+		{% else %}
+			<li><a href="{% url 'sorting' sorting='rising' %}">rising</a></li>
+		{% endif %}
+		
+		{% if sorting == "controversial" %}
+			<li class="active"><a href="{% url 'sorting' sorting='controversial' %}">controversial</a></li>
+		{% else %}
+			<li><a href="{% url 'sorting' sorting='controversial' %}">controversial</a></li>
+		{% endif %}
+		
+		{% if sorting == "top" %}
+			<li class="active"><a href="{% url 'sorting' sorting='top' %}">top</a></li>
+		{% else %}
+			<li><a href="{% url 'sorting' sorting='top' %}">top</a></li>
+		{% endif %}
+		<li><a href="#">gilded</a></li>
+		<li><a href="#">wiki</a></li>
+		{% if sorting == "promoted" %}
+			<li class="active"><a href="{% url 'sorting' sorting='promoted' %}">promoted</a></li>
+		{% else %}
+			<li><a href="{% url 'sorting' sorting='promoted' %}">promoted</a></li>
+		{% endif %}
+		
 	{% endif %}
 {% endblock %}
 
@@ -46,7 +74,7 @@
 <!-- Posts list  -->
 <!-- Voting form -->
 <div class="row">
-	<div class="col-xs-1" id="ratting-form">
+	<div class="col-sm-1 col-xs-6" id="ratting-form">
 		{% if user.is_authenticated %}
 			<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
 		{% endif %}
@@ -76,7 +104,7 @@
 		</form>
 	</div>
 <!-- Thumbnail -->
-	<div class="col-xs-1" id="thumbnail">
+	<div class="col-sm-1 col-xs-6" id="thumbnail">
 	{% if post.image %}
 			<img src="{% static "media/" %}{{post.image}}"/>
 	{% elif post.imgur_image %}
@@ -86,7 +114,7 @@
 	{% endif %}
 	</div>
 <!-- Post title, author, date, subreddit -->	
-	<div class="col-xs-10" id="post">
+	<div class="col-sm-10 col-xs-6" id="post">
 		{% if not post.link == None %}
 			<a id="postlist-title" href="{{post.link}}">{{post.title}}</a>
 		{% else %}
@@ -94,7 +122,14 @@
 		{% endif %}
 			<p id="postlist-details"> added {{post.date|naturaltime}} by <a href="{% url 'all_activity' username=post.author %}">{{post.author}}</a> do
 			<a href="{% url 'category' category=post.subreddit %}">/r/{{post.subreddit}}</a></p>
-			<p id="under-post"><a href="{% url 'detailview' word=post.subreddit slug=post.slug %}">{{post.comments_count}} komentarzy</a>  <a href="#">podziel się</a>  <a href="#">zapisz</a> </p>
+			<form method="POST" id="close-form" action="{% url 'close' pk=post.pk %}">{% csrf_token %}
+			<button id="close-button" type="submit" class="btn btn-link">close</button>
+			</form>
+			<p id="under-post"><a href="{% url 'detailview' word=post.subreddit slug=post.slug %}">{{post.comments_count}} komentarzy</a>  <a href="#">podziel się</a>  <a href="#">zapisz</a> 
+			{% if post.author == user %}
+			<a class="not-active" href="#">close</a>
+			{% endif %}
+			</p>
 	</div>			
 </div>
 

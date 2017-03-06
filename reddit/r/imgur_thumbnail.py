@@ -16,8 +16,8 @@ class ImgurThumbnail:
         imgur_id = imgur_list[-1]
         return imgur_id           
         
-    def imgur_thumbnail(self, url, imgur_id):
-        imgurl = requests.get('https://api.imgur.com/3/gallery/'+imgur_id(url))
+    def imgur_thumbnail(self, url):
+        imgurl = requests.get('https://api.imgur.com/3/gallery/'+self.imgur_imageid(url))
         imgurl_json = imgurl.json()
         try:
             imgurl_image = imgurl_json['data']['images'][0]['link']
@@ -32,8 +32,8 @@ class ImgurThumbnail:
         thumbnail_url = '.'.join(splitted_url)
         return thumbnail_url
     
-    def download_thumbnail(self, new_thumbnail, url, imgur_id):
-        image = requests.get(new_thumbnail(url, imgur_id))
+    def download_thumbnail(self, url):
+        image = requests.get(self.imgur_thumbnail(url))
         file = Image.open(BytesIO(image.content)).convert('RGB')
         file.thumbnail((70,70), Image.ANTIALIAS)
         picture_file = BytesIO()

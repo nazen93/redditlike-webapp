@@ -12,6 +12,8 @@ from .imgur_thumbnail import ImgurThumbnail
 from io import StringIO, BytesIO
 import io
 from PIL import Image
+from random import randrange
+from _sqlite3 import IntegrityError
 
 # Create your models here.
 
@@ -24,12 +26,13 @@ class SubForum(models.Model):
 
 class PostText(ImgurThumbnail, models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=50,null=True, editable=False)
+    slug = models.SlugField(max_length=50,null=True, editable=False, unique=True)
     link = models.URLField(max_length=200, null=True, blank=True)
     image = models.ImageField(null=True, blank=True)
     body = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    is_promoted = models.BooleanField(default=False)
     up_votes = models.IntegerField(default=0, editable=False)
     down_votes = models.IntegerField(default=0, editable=False)
     rating = models.IntegerField(default=0, editable=False)
@@ -39,20 +42,24 @@ class PostText(ImgurThumbnail, models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.slug = slugify(self.title)  
-                      
+            self.slug = slugify(self.title)
+            slug_counter = PostText.objects.filter(slug__startswith=self.slug, slug__endswith=self.slug).count()
+            if slug_counter != 0:
+                self.slug = '%s-%s' % (self.slug, str(slug_counter))
+                
+                                       
         if self.image:  
             self.body = self.thumbnail_file((255,255))
             self.image.file = self.thumbnail_file((55,55))
             
         if self.link and 'imgur' in self.link:
-            picture_path = self.download_thumbnail(self.imgur_thumbnail, self.link, self.imgur_imageid)
-            fullsize_picture_path = self.imgur_thumbnail(self.link, self.imgur_imageid)            
+            picture_path = self.download_thumbnail(self.link)
+            fullsize_picture_path = self.imgur_thumbnail(self.link)            
             self.body = self.imgur_image_large(fullsize_picture_path)
             self.image = picture_path
-        
-        return super(PostText, self).save(*args, **kwargs)               
-
+            
+        super(PostText, self).save(*args, **kwargs)
+                 
     def __str__(self):
         return self.title
     

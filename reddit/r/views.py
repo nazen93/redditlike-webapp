@@ -11,7 +11,7 @@ from django.utils.http import is_safe_url
 from django.views.generic import View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView, RedirectView
 from django.views.generic.edit import FormMixin
 
-from .extra import VotedUpDown
+from .extra import VotedUpDown, Sorting
 from .forms import SearchForm, SignUpForm, VotingForm, CommentForm, CommentRepliesForm, MyAuthenticationForm, TextPost, LinkPost
 from .mixins import NewPostSuccessURLMixin, GetAuthorMixin, SearchFormMixin, LoginRequiredMixin, PreviousPageMixin, AlreadyLoggedin
 from .models import SubForum, PostText, UserProfile, Voter, Comments, CommentReplies
@@ -43,23 +43,23 @@ class PostsList(VotedUpDown, SearchFormMixin, FormMixin, ListView):
             all_objects = PostText.objects.filter(is_active=True).order_by('-date')
             updated_queryset = self.up_or_down(all_objects)
             return updated_queryset
+        
 
-
-class SortedPostsList(PostsList):     
+class SortedPostsList(Sorting, PostsList):     
     
     def get_queryset(self, **kwargs):
         sorting = self.kwargs['sorting']
-        if sorting == 'top':
-            sorted_queryset = PostText.objects.filter(is_active=True).order_by('-rating')
-            updated_queryset = self.up_or_down(sorted_queryset)
-            return updated_queryset
-        elif sorting == "controversial":
-            sorted_queryset = PostText.objects.filter(is_active=True).order_by('-comments_count')
-            updated_queryset = self.up_or_down(sorted_queryset)
-            return updated_queryset  
-        
-        
-class SubredditPostsList(PostsList):
+        sort_result = self.sort_method(sorting, None)
+        return sort_result
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super(SortedPostsList, self).get_context_data(*args, **kwargs)
+        sorting = self.kwargs['sorting']
+        context['sorting'] = sorting
+        return context
+            
+              
+class SubredditPostsList(Sorting, PostsList):
         
     def get_queryset(self):
         category = self.kwargs['category']
@@ -73,27 +73,21 @@ class SubredditPostsList(PostsList):
         context['subreddit'] = subreddit_name
         return context        
 
+
 class SortedSubRedditList(SubredditPostsList):
     
     def get_queryset(self, **kwargs):
         category = self.kwargs['category']
         sorting = self.kwargs['sorting']
-        category_or_404 = get_list_or_404(PostText, subreddit__name=category)
-        subreddit_objects = PostText.objects.filter(is_active=True, subreddit__name=category)
-        if sorting == 'top':
-            sorted_queryset = subreddit_objects.order_by('-rating')
-            updated_queryset = self.up_or_down(sorted_queryset)
-            return updated_queryset
-        elif sorting == "controversial":
-            sorted_queryset = subreddit_objects.order_by('-comments_count')
-            updated_queryset = self.up_or_down(sorted_queryset)
-            return updated_queryset  
+        sort_result = self.sort_method(sorting, category)
+        return sort_result
     
     def get_context_data(self, *args, **kwargs):
         context = super(SortedSubRedditList, self).get_context_data(*args, **kwargs)
         sorting = self.kwargs['sorting']
         context['sorting'] = sorting
         return context
+
             
 class PostView(VotedUpDown, Voting_function, PreviousPageMixin, SearchFormMixin, FormMixin, DetailView):
     model = PostText
@@ -106,8 +100,6 @@ class PostView(VotedUpDown, Voting_function, PreviousPageMixin, SearchFormMixin,
         try:
             user = self.request.user
             current_date = datetime.now(timezone.utc)
-            print(current_date)
-            print(object.date)
             current_date = current_date-object.date
             print(current_date.days)
             if Voter.objects.filter(user=user, vote_id=object.pk, voting_direction="up").exists():
@@ -200,11 +192,30 @@ class CommentUpdate(PostUpdate):
 class ReplyUpdate(PostUpdate): 
     model = CommentReplies
     
+
+class CloseThread(PreviousPageMixin, UpdateView):
+    model = PostText
+    fields = ['is_active']
+    template_name = "r/basic_index.html"
+    
+    def form_valid(self, form):
+        current_user = self.request.user
+        thread_pk = self.kwargs['pk']
+        thread_object = PostText.objects.get(pk=thread_pk)
+        form = self.get_form()
+        if current_user == thread_object.author:
+            thread_object.is_active = False
+            thread_object.save()
+            if form.is_valid():
+                return super(CloseThread, self).form_valid(form)
+        else:
+            return super(CloseThread, self).form_invalid(form)
+
        
 class NewTextPost(LoginRequiredMixin, SearchFormMixin, GetAuthorMixin, NewPostSuccessURLMixin, CreateView):
     form_class = TextPost
     template_name = 'r/new_text_post.html'
-    
+
 
 class NewLinkPost(NewTextPost):
     form_class = LinkPost
