@@ -1,10 +1,18 @@
 {% extends "r/index.html" %}}
 {% load static %}
 {% load humanize %}
+
+{% block title %}
+<title>reddit posts</title>
+{% endblock %}
+
 <!-- Default navbar tabs -->
 {% block navbar_tabs %}
-	{% if subreddit %}
+	<!-- Nests another block inside the main one so the same data can used more than once in the same template -->
+	{% block nested_navbar_tabs %} 
 	
+	{% if subreddit %}
+	<!-- Checks if the subreddit kwarg exists, if true then it changes the reverse url -->
 		{% if not sorting %}
 			<li class="active"><a href="#">hit</a></li>
 		{% else %}
@@ -62,10 +70,9 @@
 		{% endif %}
 		
 	{% endif %}
-{% endblock %}
-
-{% block title %}
-<title>reddit posts</title>
+	
+	{% endblock %}
+	
 {% endblock %}
 
 {% block content %}
@@ -74,7 +81,7 @@
 <!-- Posts list  -->
 <!-- Voting form -->
 <div class="row">
-	<div class="col-sm-1 col-xs-6" id="ratting-form">
+	<div class="col-lg-1 col-md-1 col-sm-2 col-xs-3" id="ratting-form">
 		{% if user.is_authenticated %}
 			<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
 		{% endif %}
@@ -104,7 +111,7 @@
 		</form>
 	</div>
 <!-- Thumbnail -->
-	<div class="col-sm-1 col-xs-6" id="thumbnail">
+	<div class="col-lg-1 col-md-1 col-sm-2 col-xs-5" id="thumbnail">
 	{% if post.image %}
 			<img src="{% static "media/" %}{{post.image}}"/>
 	{% elif post.imgur_image %}
@@ -114,7 +121,7 @@
 	{% endif %}
 	</div>
 <!-- Post title, author, date, subreddit -->	
-	<div class="col-sm-10 col-xs-6" id="post">
+	<div class="col-lg-10 col-md-10 col-sm-8 col-xs-6" id="post">
 		{% if not post.link == None %}
 			<a id="postlist-title" href="{{post.link}}">{{post.title}}</a>
 		{% else %}

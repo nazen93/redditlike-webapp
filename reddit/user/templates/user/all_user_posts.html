@@ -15,9 +15,11 @@
 {% block content %}
 {% load humanize %}
 {% for post in user_activity %}
+
 	{% if post.title %}
+	
 		<div class="row" id="inbox-all">
-			<div class="col-xs-1" id="ratting-form">
+			<div class="ol-lg-1 col-md-1 col-sm-2 col-xs-3" id="ratting-form">
 			{% if user.is_authenticated %}
 				<form method="POST" action="{% url 'voting' word=post.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
 			{% endif %}
@@ -47,7 +49,7 @@
 				</form>
 			</div>
 		<!-- Thumbnail -->
-			<div class="col-xs-1" id="thumbnail">
+			<div class="col-lg-1 col-md-1 col-sm-2 col-xs-5" id="thumbnail">
 			{% if post.image %}
 					<img src="{% static "media/" %}{{post.image}}"/>
 			{% elif post.imgur_image %}
@@ -57,7 +59,7 @@
 			{% endif %}
 			</div>
 		<!-- Post title, author, date, subreddit -->	
-			<div class="col-xs-10" id="post">
+			<div class="col-lg-10 col-md-10 col-sm-8 col-xs-6 id="post">
 				{% if not post.link == None %}
 					<a id="postlist-title" href="{{post.link}}">{{post.title}}</a>
 				{% else %}
@@ -70,10 +72,10 @@
 		</div>
 	{% elif post.thread %}
 		<div class="row">	
-			<div class="col-xs-12" id="inbox-all">
-				<a href="{% url 'detailview' word=post.thread.subreddit slug=post.thread.slug %}"><i>{{post.thread}}</i></a>
+			<div class="col-sm-12 col-xs-12" id="inbox-all">
+				<b>post reply</b> <a href="{% url 'detailview' word=post.thread.subreddit slug=post.thread.slug %}"><i>{{post.thread}}</i></a>
 				<div class="row">	
-					<div class="col-xs-1" id="ratting-form-inbox">	
+					<div class="col-xs-2" id="ratting-form-inbox">	
 					{% if user.is_authenticated %}
 						<form method="POST" action="{% url 'voting' word=post.thread.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
 					{% endif %}
@@ -101,7 +103,7 @@
 						{% endif %}
 						</form>
 					</div>
-					<div class="col-xs-11">
+					<div class="col-xs-10">
 						<p id="message-data"> from <a href="{% url 'all_activity' username=post.author %}">{{post.author}}</a> via <a href="{% url 'category' category=post.thread.subreddit %}">/r/{{post.thread.subreddit}}</a> sent {{post.date|naturaltime}}</p>
 						<p id="body-message"> {{post.body}} </p>
 						<p id="under-message"> <a href="{% url 'detailview' word=post.thread.subreddit slug=post.thread.slug %}">full comments ({{post.thread.comments_count}})</a></p>
@@ -112,9 +114,9 @@
 	{% elif post.main_post %}
 		<div class="row">	
 			<div class="col-xs-12" id="inbox-all">
-				<a href="{% url 'detailview' word=post.main_post.thread.subreddit slug=post.main_post.thread.slug %}"><i>{{post.main_post.thread}}</i></a>
+				<b>comment reply</b> <a href="{% url 'detailview' word=post.main_post.thread.subreddit slug=post.main_post.thread.slug %}"><i>{{post.main_post.thread}}</i></a>
 				<div class="row">
-					<div class="col-xs-1" id="ratting-form-inbox">	
+					<div class="col-xs-2" id="ratting-form-inbox">	
 						{% if user.is_authenticated %}
 							<form method="POST" action="{% url 'voting' word=post.main_post.thread.subreddit pk=post.pk direction='up' %}"> {% csrf_token %}
 						{% endif %}
@@ -142,7 +144,7 @@
 						{% endif %}
 						</form>
 					</div>				
-					<div class="col-xs-11">
+					<div class="col-xs-10">
 						<p id="message-data">from <a href="{% url 'all_activity' username=post.author %}">{{post.author}}</a> via <a href="{% url 'category' category=post.main_post.thread.subreddit %}">/r/{{post.thread.subreddit}}</a> sent {{post.date|naturaltime}}</p>
 						<p id="body-message"> {{post.body}} </p>
 						<p id="under-message"> <a href="{% url 'detailview' word=post.main_post.thread.subreddit slug=post.main_post.thread.slug %}">full comments ({{post.main_post.thread.comments_count}})</a>

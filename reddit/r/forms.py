@@ -8,7 +8,6 @@ from .models import PostText, Comments, CommentReplies
 
 class SearchForm(forms.Form):
     search = forms.CharField(max_length=100, label='', widget=forms.TextInput(attrs={
-        'size': 38,
         'placeholder': 'search'
         }))
     

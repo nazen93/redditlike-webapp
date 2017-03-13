@@ -16,33 +16,105 @@
     <link rel='stylesheet' type='text/css' href="{% static 'css/custom.css' %}">
 </head>
 
-<!-- page header -->
-<!-- top navbar -->
-<div class="navbar navbar-static-top" id="top-navbar">
+<!-- Top navbar -->
+<nav class="navbar navbar-static-top" id="top-navbar">
     <div class="container-fluid">
-        <div class="row">
+        <div class="navbar-header">
             <ul class="nav nav-pills" id="top-tabs">
+            	<li class="dropdown">
+            	  <a href="" class="dropdown-toggle" id="my-subreddits" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				    My subreddits
+				    <span class="caret"></span>
+				  </a>
+				  <ul class="dropdown-menu" aria-labelledby="my-subreddits">
+				    <li><a href="#">Action</a></li>
+				    <li><a href="#">Another action</a></li>
+				    <li><a href="#">Something else here</a></li>
+				    <li><a href="#">Separated link</a></li>
+				  </ul>
+            	</li>
                 <li class="active"><a href="#">Front</a></li>
                 <li><a href="#">All</a></li>
                 <li><a href="#">Random</a></li>
             </ul>
         </div>
     </div>
-</div>
-<!--lower navbar -->
-<div class="navbar sub-navbar" id="lower-navbar">
-<div class="container-fluid" id="test">
-   <a href="{% url 'index' %}" class="navbar-brand">reddit</a>
-            <ul class="nav nav-tabs" id="lower-tabs">
-            	{% block navbar_tabs %}
-                {% endblock %}
-                {% if not user.is_authenticated %}
-                <li class="pull-right"><a id="want-to-join" data-toggle="modal" href="#modal-1">Want to join? Log in or sign up in seconds.</a></li>
+</nav>
+<!-- Lower navbar -->
+<nav class="navbar sub-navbar hidden-xs" id="lower-navbar">
+	<div class="container-fluid">
+		<div class="navbar-header" id="large-navbar">
+		<a class="navbar-brand" href="{% url 'index' %}">reddit</a>
+			<ul class="nav nav-tabs">
+			      	 {% block navbar_tabs %}
+			         {% endblock %}
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+       		{% if not user.is_authenticated %}
+                <li><a id="logged-in-panel" data-toggle="modal" href="#modal-1">Want to join? Log in or sign up in seconds.</a></li>
                 {% else %}
-                <div class="pull-right" id="logged-in-panel">
-                <li><a href="{% url 'all_activity' username=user.get_username %}">{{user.get_username}}</a> | <a class="glyphicon glyphicon-envelope" href="{% url 'inbox' %}"></a> | <a href="">settings</a> | <a href="{% url 'logout' %}">logout</a></li>
-                </div>
-                {% endif %}
+	                <div id="logged-in-panel">
+	                	<li><a href="{% url 'all_activity' username=user.get_username %}">{{user.get_username}}</a> | <a class="glyphicon glyphicon-envelope" href="{% url 'inbox' %}"></a> | <a href="">settings</a> | <a href="{% url 'logout' %}">logout</a></li>
+	     			</div>
+     			{% endif %}
+      		</ul>
+		</div>
+	</div>
+</nav>
+<!-- Collapsible navbar visible only mobile devices (xs)  -->
+<nav class="navbar sub-navbar visible-xs" id="lower-navbar">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'index' %}">reddit</a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapsible-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="collapsible-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      <li role="separator" class="divider"></li>
+        {% if not user.is_authenticated %}
+          <li><a data-toggle="modal" href="#modal-1">Want to join? Log in or sign up in seconds.</a></li>
+        {% else %}
+		  <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.get_username}} panel <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+			  <li><a href="{% url 'all_activity' username=user.get_username %}">Profile</a> </li>			 
+			  <li><a href="{% url 'inbox' %}">Messages</a></li>
+			  <li><a href="">Settings</a></li>
+		  	  <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+          </li>	
+        {% endif %}
+          <li role="separator" class="divider"></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Go to <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+	      	  {% block nested_navbar_tabs %}
+	          {% endblock %}
+            </ul>
+          </li>
+          <li role="separator" class="divider"></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add new post <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+			  <li><a href="{% url 'new_text_post' %}#tab_text-post">Submit new text post</a></li>
+			  <li><a href="{% url 'new_text_post' %}">Submit new link post</a></li>
+            </ul>
+          </li>
+        <li>
+          <form id="custom-search-form" method='GET' action="{% url 'index' %}">
+		    {{search_form|crispy}}
+		  </form>
+		</li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>  
                 <!-- Register form modal -->                      
                 <div class="container-fluid">
                 <a href="" data-toggle="modal" data-target="#modal-1"></a>
@@ -52,26 +124,30 @@
 	                			<div class="modal-header">
 	                				<button type="button" class="close" data-dismiss="modal">&times;</button>
 	                					<div class="row">
-	                						<div class="col-lg-6">
+	                						<div class="col-sm-6 col-xs-6">
 	                							<h3 class="text-center">Register a new account</h3>
 	                						</div>
-	                						<div class="col-lg-6">
+	                						<div class="col-sm-6 col-xs-6">
 	                							<h3 class="text-center">Log in</h3>
 	                						</div>
 	                					</div>
 	                			<div class="modal-body">
 	                				<div class="row">
-	                					<div class="col-sm-5 col-sm-offset-1" id="modal-border">	                				
+	                					<div class="col-md-5 col-md-offset-1 col-sm-6 col-xs-6" id="modal-border">	                				
 	                						<form method="POST" action="{% url 'register' %}">{% csrf_token %}
 				                				{{register_form|crispy}}
-				                				<button type="submit" id="modal-button" class="btn btn-primary">Register</button>	                				
+				                				<div class="text-center">
+				                					<button type="submit" id="modal-button" class="btn btn-primary">Register</button>	   
+				                				</div>             				
 	                						</form>
 		                				</div>	
-	                					<div class="col-sm-5 col-sm-offset-1">
+	                					<div class="col-md-5 col-sm-6 col-xs-6">
 		                					<form method="POST" action="{% url 'login' %}">{% csrf_token %}
-				                				{{modal_login_form|crispy}}
-				                				<button type="submit" id="modal-button" class="btn btn-primary">Log in</button>
-				                				<input type="hidden" name="next" value="{{  request.GET.next }}" />
+				                				{{login_form|crispy}}
+				                				<div class="text-center">
+					                				<button type="submit" id="modal-button" class="btn btn-primary">Log in</button>
+					                				<input type="hidden" name="next" value="{{  request.GET.next }}" />
+				                				</div>
 		                					</form>  
 	                					</div>
 	                				</div>    		
@@ -84,10 +160,6 @@
 	                	</div>
 	                </div>
 	            </div>	            
-            </ul>
-        </div>
-   </div>
-</div>
 
 <!-- Body content -->
 <div class="container-fluid" id="body-container">
@@ -97,11 +169,11 @@
 	            {% endblock %}
     	</div>
     	<!-- Search form -->
-		<div class="col-sm-2 other" id="right-side-column">
+		<div class="col-sm-2 hidden-xs" id="right-side-column">
 			<div class="row">
 				<div class="col-xs-12">
-			        <form id="custom-search-form" class="pull-right" method='GET' action="{% url 'index' %}">
-	                   	{{search_form}}
+			        <form id="custom-search-form" class="" method='GET' action="{% url 'index' %}">
+	                   	{{search_form|crispy}}
 					</form>
 	            </div>
 	        </div>
@@ -114,11 +186,7 @@
 	        		<div class="panel panel-primary pull-right" id="login-panel">
 		        		<form method="POST" class="text-center" action="{% url 'login' %}">{% csrf_token %}
 					    	{{login_form}}
-					    	<div class="row">
-					    	<div class="col-lg-12">
 					        <button type="submit" id="login-button" class="btn btn-default pull-right">login</button>
-					        </div>
-					        </div>
 					    </form>   
 					</div>
 				</div>
@@ -127,7 +195,7 @@
 	        <!-- New post -->
 		    <div class="row">
 		    	<div class="col-sm-12">   
-		    		<div class="btn-group-vertical" role="group" aria-label="..." id="create-posts">
+		    		<div class="btn-group-vertical btn-block" role="group" aria-label="..." id="create-posts">
 		    			{% if user.is_authenticated %}
 				     	<a class="btn btn-default" href="{% url 'new_text_post' %}" role="button">Submit a new link</a>
 				        <a class="btn btn-default" href="{% url 'new_text_post' %}#tab_text-post" role="button">Submit a new text post</a>
@@ -140,7 +208,25 @@
 	    	</div>
   		</div>
 	</div>
-</div>	
+</div>
+<!-- Pagination -->
+    {% if is_paginated %}
+    <div class="container-fluid">
+	    <div class="row">
+		    <div class="col-xs-12">
+			    <ul class="pagination">
+					{% for page_number in paginator.page_range %}
+						{% if page_obj.number == page_number %} <!-- adds class active to the current page number -->
+					 	<li class="active"><a href="?page={{page_number}}">{{page_number}}</a></li>
+					 	{% else %}
+					 	<li><a href="?page={{page_number}}">{{page_number}}</a></li>
+					 	{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+    {% endif %}
 <!-- Footer -->
 <div id="footer">
     <div class="container" id="footer">

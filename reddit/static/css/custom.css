@@ -3,12 +3,12 @@
     font-size: 10px;
     font-family: Verdana;
     height: 5px;
-    padding-top: 0!important;
-    padding-bottom: 0!important;
     min-height: 17px !important;
-    padding-right:800px;
 }
 
+#top-navbar > .container-fluid {
+	padding-left: 0;
+}
 .navbar  a {
     color: #0f0f0f;
     padding-bottom: 30px;
@@ -17,62 +17,85 @@
 .navbar > .nav-tabs > li{
     height: 10px;
 }
+
 #lower-navbar{
     color: #0f0f0f !important;
-    background-color: #cee2f8;
+    background-color: #cee3f8;
     margin-top: -20px;
-    height: 30px;
     font-family: Verdana;
     border-top: 1px;
     border-bottom: 1px;
     padding-bottom: 0;
     margin-bottom: 0;
     border-color: #5F99CF !important;
-
-}
-.navbar > .container-fluid{
-	padding-right: 0;
+    position:relative;
 }
 
-#top-tabs > li> a{
+#collapsible-navbar{
+	background-color: #cee2f8;	
+}
+
+.dropdown-menu > .divider {
+	background-color: black;
+}
+
+.dropdown-menu > li > a:hover{
+	background-color: #5F99CF;
+}
+
+.dropdown-menu > li.active:hover{
+	background-color: black !important;
+	
+}
+
+
+#top-tabs > li > a{
     padding-bottom: 0.5px;
     padding-top: 0.5px;
 }
 
+#lower-tabs {
+	position:absolute; 
+	bottom: 5px;
+}
+
 #lower-tabs > li {
 	height: 15px;
-	margin-top: 7px;
+	margin-top: 7px;    	
 }
 
 #lower-tabs > li  a{
     padding-bottom: 0;
-    padding-top: 0;
-    
+    padding-top: 0;   
 }
 
 #lower-tabs{
 	margin-top: 23px;
 }
 
-
-.nav-tabs > li > a:hover {
-
+.navbar-toggle{
+	background-color: white;
 }
 
-#top-tabs> li > a:active{
-    color: crimson !important;
-    border-bottom: 0;
+.icon-bar {
+	background-color: black;
 }
 
-
-#lower-navbar > navbar  ::after{
-	content:none;
+.nav-tabs > li > a:hover,
+.nav-tabs > li > a:focus,
+.nav-tabs > li.active > a {
+	color: red;
+	background-color: white !important;
 }
+
 
 #custom-search-form {
 	margin-bottom: 10px;
 }
 
+#id_search{
+	width: 100%;
+}
 #footer {
  clear: both;
  position: relative;
@@ -94,7 +117,6 @@
     font-family: Verdana;
     padding-bottom:25px;
     font-size: medium;
-
 }
 
 #posts-list > a {
@@ -137,10 +159,6 @@
 
 #wut {
 	float:right;
-}
-
-#new-post {
-	float:left;
 }
 
 #post{
@@ -198,16 +216,24 @@
     display: list-item;
 }
 
+.btn {
+    white-space: normal;
+}
+#register-page-form, 
 #modal-border {
 	border-right: 1px solid #DCDCDC;	
+	display: in-line;
+}
+
+
+#register-page-form,
+#login-page-form{
+	margin-top: 60px;
 }
 
 #create-posts {
 	font-family: Verdana;
-	width: 300px;
-	float: right;
 }
-
 
 #input{
 	width: 30px;
@@ -219,12 +245,19 @@
 
 #login-panel {
 	height: 75px;
-	width: 300px;
 	display: in-line;
+	position: relative;
+}
+
+#login-button {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	padding: 1px 4px;
 }
 
 #login-form {
-	margin-top: 5px;
+	margin: 5px 4px 0 4px;
 	font-size: x-small;
 	font-family: Verdana;
 }
@@ -232,22 +265,22 @@
 #modal-login-form{
 	font-size: x-small;
 	font-family: Verdana;
-	width: 250px;
+	display: in-line block;
 }
 
 #register-form{
 	font-size: x-small;
 	font-family: Verdana;
-	width: 250px;
+	display: in-line block;
 }
 
-#login-button {
-	margin-top: 18px;
-	padding: 1px 4px;
-}
 
 .panel {
 	border-color: #000;
+}
+
+#mobile-loggedin-panel{
+	display: in-line;
 }
 
 #right-side-column{
@@ -273,15 +306,13 @@
 }
 
 #modal-button{
-	float: right;
-	margin-top: 30px;
-	margin-right: 83px;
+	margin-top: 15px;
 }
 
 #logged-in-panel {
+	padding: 0 5px 0 5px;
 	margin-top: 10px;
 	background-color: #eaf4fc;
-	padding-left: 5px;
 }
 
 #logged-in-panel > li {
@@ -296,8 +327,6 @@
 	font-family: Verdana;
 	padding-bottom: 0;
 }
-
-
 
 #panel-body{
 	background-color: #cee2f8;
@@ -321,32 +350,29 @@
 	background-color: #cee2f8;
 	font-family: Verdana;
 	font-size: x-small;
-
 }
 
 #addpost-nav-tabs > li.active > a,
 #addpost-nav-tabs > li.active > a:hover,
 #addpost-nav-tabs > li.active > a:focus{
-            background-color: #5f99cf;  
+	background-color: #5f99cf;  
         } 
-
+        
+#id_title,
 #id_link,
 #id_subreddit{
-	width: 480px;
+	width: 100%;
 }
 
-#id_title{
-	width: 480px;
-}
 
 #id_body{
-	width: 480px;
+	width: 100%;
 	height: 100px;
 }
 
 #id_topic,
 #id_recipient{
-	width: 480px;
+	width: 100%;
 }
 
 #add-post-label{
@@ -367,12 +393,11 @@
 	margin-top: 10px;
 }
 
-
 #inbox-tabs > li.active > a,
 #inbox-tabs > li.active > a:hover,
 #inbox-tabs > li.active > a:focus{
-            background-color: white;  
-            color: red;
+	background-color: white;  
+    color: red;
 } 
         
 #inbox-all{
@@ -447,7 +472,8 @@
 }
 
 #body-panel {
-	padding: 5px 300px 5px 5px;
+	min-width: 300px;
+	padding: 5px 100px 5px 5px;
 	display: inline-block;
 	margin-bottom: 0;
 	font-family: Verdana;
@@ -519,7 +545,7 @@
 	margin-right: 0;
 	text-align: right;
 	width: 30px;
-	}
+}
 	
 #detail-ratting-form > p {
 	margin-right: 4px;
@@ -564,4 +590,26 @@
 
 #close-form {
 	display: none;
+}
+
+#large-navbar > .nav-tabs {
+	position: absolute;
+	bottom: 0;
+	margin-left: 50px;
+}
+
+#large-navbar > .nav-tabs > li{
+	left:20px;
+}
+
+#large-navbar  > .navbar-nav{
+	position: absolute;
+	bottom: 0;
+	right: 15px;
+}
+
+#large-navbar > .nav-tabs > li > a{
+	padding-top: 0;
+	padding-bottom: 0;
+	
 }

@@ -221,9 +221,9 @@ class NewLinkPost(NewTextPost):
     form_class = LinkPost
     
 
-class RegisterUser(AlreadyLoggedin, FormView):
+class RegisterUser(SearchFormMixin, AlreadyLoggedin, FormView):
     form_class = SignUpForm
-    template_name = 'r/new_text_post.html'
+    template_name = 'r/register-login.html'
     success_url = reverse_lazy('index')
     
     def form_valid(self, form):
@@ -244,7 +244,7 @@ class RegisterUser(AlreadyLoggedin, FormView):
 
 class LoginView(AlreadyLoggedin, PreviousPageMixin, SearchFormMixin, FormView):
     form_class = AuthenticationForm
-    template_name = 'r/new_text_post.html'
+    template_name = 'r/register-login.html'
                 
     def form_valid(self, form):
         login(self.request, form.get_user())
