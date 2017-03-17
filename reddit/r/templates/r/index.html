@@ -54,7 +54,7 @@
                 <li><a id="logged-in-panel" data-toggle="modal" href="#modal-1">Want to join? Log in or sign up in seconds.</a></li>
                 {% else %}
 	                <div id="logged-in-panel">
-	                	<li><a href="{% url 'all_activity' username=user.get_username %}">{{user.get_username}} </a> | <a class="glyphicon glyphicon-envelope" href="{% url 'inbox' %}">{% if unread > 0  %}({{unread}}){% endif %}</a> | <a href="">settings</a> | <a href="{% url 'logout' %}">logout</a></li>
+	                	<li><a href="{% url 'all_activity' username=user.get_username %}">{{user.get_username}} </a> | <a class="glyphicon glyphicon-envelope" href="{% url 'inbox' %}">{% if unread > 0  %}({{unread}}){% endif %}</a> | <a href="{% url 'logout' %}">logout</a></li>
 	     			</div>
      			{% endif %}
       		</ul>
