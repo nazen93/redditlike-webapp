@@ -1,0 +1,11 @@
+{% extends 'r/index.html' %}
+{% load crispy_forms_tags %}
+{% block navbar_tabs %}
+	<li><a href="{% url 'compose' %}">send a private message</a></li>
+	<li><a href="{% url 'inbox' %}">inbox</a></li>
+	<li><a href="{% url 'sent' %}">sent</a></li>
+{% endblock %}
+
+
+{% block content %}
+{% endblock %}

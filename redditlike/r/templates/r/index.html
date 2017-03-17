@@ -1,0 +1,296 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+    {% block title %}
+    {% endblock %}
+    <title>Projectorino</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Bootstrap CSS theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <!-- Custom CSS styling -->
+    <link rel='stylesheet' type='text/css' href="{% static 'css/custom.css' %}">
+</head>
+
+<!-- Top navbar -->
+<nav class="navbar navbar-static-top" id="top-navbar">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <ul class="nav nav-pills" id="top-tabs">
+            	<li class="dropdown">
+            	  <a href="" class="dropdown-toggle" id="my-subforums" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				    My subforums
+				    <span class="caret"></span>
+				  </a>
+				  <ul class="dropdown-menu" aria-labelledby="my-subforums">
+				  {% if user.is_authenticated %}
+				  	{% for category in subscribed.all %}
+				  		<li><a href="{% url 'category' category=category %}">{{category}}</a></li>
+				  	{% endfor %}
+				  {% endif %}
+				  </ul>
+            	</li>
+                <li><a href="{% url 'index' %}">All</a></li>
+                <li><a href="{% url 'random' %}">Random</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- Lower navbar -->
+<nav class="navbar sub-navbar hidden-xs" id="lower-navbar">
+	<div class="container-fluid">
+		<div class="navbar-header" id="large-navbar">
+		<a class="navbar-brand" href="{% url 'index' %}">Projectorino</a>
+			<ul class="nav nav-tabs">
+			      	 {% block navbar_tabs %}
+			         {% endblock %}
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+       		{% if not user.is_authenticated %}
+                <li><a id="logged-in-panel" data-toggle="modal" href="#modal-1">Want to join? Log in or sign up in seconds.</a></li>
+                {% else %}
+	                <div id="logged-in-panel">
+	                	<li><a href="{% url 'all_activity' username=user.get_username %}">{{user.get_username}} </a> | <a class="glyphicon glyphicon-envelope" href="{% url 'inbox' %}">{% if unread > 0  %}({{unread}}){% endif %}</a> | <a href="{% url 'logout' %}">logout</a></li>
+	     			</div>
+     			{% endif %}
+      		</ul>
+		</div>
+	</div>
+</nav>
+<!-- Collapsible navbar visible only mobile devices (xs)  -->
+<nav class="navbar sub-navbar visible-xs" id="lower-navbar">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'index' %}">reddit</a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#collapsible-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="collapsible-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      <li role="separator" class="divider"></li>
+        {% if not user.is_authenticated %}
+          <li><a data-toggle="modal" href="#modal-1">Want to join? Log in or sign up in seconds.</a></li>
+        {% else %}
+		  <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{user.get_username}} panel <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+			  <li><a href="{% url 'all_activity' username=user.get_username %}">Profile</a> </li>			 
+			  <li><a href="{% url 'inbox' %}">Messages</a></li>
+			  <li><a href="">Settings</a></li>
+		  	  <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+          </li>	
+        {% endif %}
+          <li role="separator" class="divider"></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Go to <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+	      	  {% block nested_navbar_tabs %}
+	          {% endblock %}
+            </ul>
+          </li>
+          <li role="separator" class="divider"></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add new post <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+			  <li><a href="{% url 'new_text_post' %}#tab_text-post">Submit new text post</a></li>
+			  <li><a href="{% url 'new_text_post' %}">Submit new link post</a></li>
+            </ul>
+          </li>
+        <li>
+          <form id="custom-search-form" method='GET' action="{% url 'index' %}">
+		    {{search_form|crispy}}
+		  </form>
+		</li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>  
+                <!-- Register form modal -->                      
+                <div class="container-fluid">
+                <a href="" data-toggle="modal" data-target="#modal-1"></a>
+	                <div class="modal fade bs-example-modal-lg" id="modal-1">
+	                	<div class="modal-dialog modal-lg">
+	                		<div class="modal-content">
+	                			<div class="modal-header">
+	                				<button type="button" class="close" data-dismiss="modal">&times;</button>
+	                					<div class="row">
+	                						<div class="col-sm-6 col-xs-6">
+	                							<h3 class="text-center">Register a new account</h3>
+	                						</div>
+	                						<div class="col-sm-6 col-xs-6">
+	                							<h3 class="text-center">Log in</h3>
+	                						</div>
+	                					</div>
+	                			<div class="modal-body">
+	                				<div class="row">
+	                					<div class="col-md-5 col-md-offset-1 col-sm-6 col-xs-6" id="modal-border">	                				
+	                						<form method="POST" action="{% url 'register' %}">{% csrf_token %}
+				                				{{register_form|crispy}}
+				                				<div class="text-center">
+				                					<button type="submit" id="modal-button" class="btn btn-primary">Register</button>	   
+				                				</div>             				
+	                						</form>
+		                				</div>	
+	                					<div class="col-md-5 col-sm-6 col-xs-6">
+		                					<form method="POST" action="{% url 'login' %}">{% csrf_token %}
+				                				{{login_form|crispy}}
+				                				<div class="text-center">
+					                				<button type="submit" id="modal-button" class="btn btn-primary">Log in</button>
+					                				<input type="hidden" name="next" value="{{  request.GET.next }}" />
+				                				</div>
+		                					</form>  
+	                					</div>
+	                				</div>    		
+	                			</div>
+	                			<div class="modal-footer">
+	                				<p class="text-center">By signing up, you agree to our Terms and that you have read our Privacy Policy and Content Policy.</p>
+	                			</div>
+	                			</div>
+	                		</div>
+	                	</div>
+	                </div>
+	            </div>	            
+
+<!-- Body content -->
+<div class="container-fluid" id="body-container">
+	<div class="row">
+    	<div class="col-xs-10" id="body-content">
+          		{% block content %}
+	            {% endblock %}
+    	</div>
+    	<!-- Search form -->
+		<div class="col-sm-2 hidden-xs" id="right-side-column">
+			<div class="row">
+				<div class="col-xs-12">
+			        <form id="custom-search-form" class="" method='GET' action="{% url 'index' %}">
+	                   	{{search_form|crispy}}
+					</form>
+	            </div>
+	        </div>
+	        <!-- Login panel -->
+	        {% block post_score %}
+	        {% endblock %}
+	        {% if not user.is_authenticated %}
+	        <div class="row">	        	
+	        	<div class="col-sm-12">
+	        		<div class="panel panel-primary pull-right" id="login-panel">
+		        		<form method="POST" class="text-center" action="{% url 'login' %}">{% csrf_token %}
+					    	{{login_form}}
+					        <button type="submit" id="login-button" class="btn btn-default pull-right">login</button>
+					    </form>   
+					</div>
+				</div>
+			</div> 
+	        {% endif %}
+	        <!-- Subsribe form -->
+	        {% if user.is_authenticated %}
+		        {% if subforum %}
+			        <div class="row">
+				        <div class="col-sm-12"> 
+				        	{% if already_subscribed %}
+				        	<form method='POST' action="{% url 'subscribe' category=subforum action='unsubscribe' %}">{% csrf_token %}
+					        	<button class="btn-danger" type="submit">unsubscribe</button>
+					        </form>	
+					       {{number_of_subscribers}} people have already subscribed!      	
+				        	{% else %}				        	
+					        <form method='POST' action="{% url 'subscribe' category=subforum action='subscribe' %}">{% csrf_token %}
+					        	<button class="btn-info" type="submit">subscribe</button>
+					        </form>
+					         {{number_of_subscribers}} people have already subscribed!     
+					        {% endif %}
+				        </div>
+			        </div>
+		        {% endif %}
+	        {% endif %}
+	        <!-- New post -->
+		    <div class="row">
+		    	<div class="col-sm-12">   
+		    		<div class="btn-group-vertical btn-block" role="group" aria-label="..." id="create-posts">
+		    			{% if user.is_authenticated %}
+				     	<a class="btn btn-default" href="{% url 'new_text_post' %}" role="button">Submit a new link</a>
+				        <a class="btn btn-default" href="{% url 'new_text_post' %}#tab_text-post" role="button">Submit a new text post</a>
+				        {% else %}
+				        <a class="btn btn-default" data-toggle="modal" href="#modal-1" role="button">Submit a new link</a>
+				        <a class="btn btn-default" data-toggle="modal" href="#modal-1" role="button">Submit a new text post</a>
+				        {% endif %}
+		    		</div>  
+		    	</div>      
+	    	</div>
+  		</div>
+	</div>
+</div>
+<!-- Pagination -->
+    {% if is_paginated %}
+    <div class="container-fluid">
+	    <div class="row">
+		    <div class="col-xs-12">
+			    <ul class="pagination">
+					{% for page_number in paginator.page_range %}
+						{% if page_obj.number == page_number %} <!-- adds class active to the current page number -->
+					 	<li class="active"><a href="?page={{page_number}}">{{page_number}}</a></li>
+					 	{% else %}
+					 	<li><a href="?page={{page_number}}">{{page_number}}</a></li>
+					 	{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	</div>
+    {% endif %}
+<!-- Footer -->
+<div id="footer">
+    <div class="container" id="footer">
+        <div class="row">
+            <ul>
+                <li><b>about</b></li>
+                <li><a href="#">blog</a></li>
+                <li><a href="#">source code</a></li>
+                <li><a href="#">advertise</a></li>
+                <li><a href="#">jobs</a></li>
+            </ul>
+            <ul>
+                <li><b>help</b></li>
+                <li><a href="#">site rules</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">wiki</a></li>
+                <li><a href="#">reddiquette</a></li>
+                <li><a href="#">transparency</a></li>
+                <li><a href="#">contact us</a></li>
+            </ul>
+            <ul>
+                <li><b>apps & tools</b></li>
+                <li><a href="#">Reddit for iPhone</a></li>
+                <li><a href="#">Reddit for Android</a></li>
+                <li><a href="#">mobile website</a></li>
+                <li><a href="#">buttons</a></li>
+            </ul>
+            <ul>
+                <li><b><3</b></li>
+                <li><a href="#">reddit gold</a></li>
+                <li><a href="#">redditgifts</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Simpiled and minified JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'js/tabs.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/active_tab.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/form_triggering.js' %}"</script>
+
+
+<script>
+
+</script>

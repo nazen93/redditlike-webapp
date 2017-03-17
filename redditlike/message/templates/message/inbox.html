@@ -1,0 +1,115 @@
+{% extends "message/inbox_base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Inbox</title>
+{% endblock %}
+{% block content %}
+{% load humanize %}
+		<ul class="nav nav-tabs" role="tablist" id="inbox-tabs">
+				<li class="active"><a href="{% url 'inbox' %}">all</a></li>
+				<li><a href="{% url 'messages' %}">messages</a></li>
+				<li><a href="{% url 'post_replies' %}">post replies</a>		
+				<li><a href="{% url 'mentions' %}">mentions</a></li>				
+    	</ul>   	
+{% for message in inbox %}
+<div class="row">	
+	<div class="col-xs-12" id="inbox-all">
+	
+		{% if message.title %}
+		
+			<b>post reply</b> <a href="{% url 'detailview' word=message.subforum slug=message.slug %}"><i>{{message.title}}</i></</a>
+			<div class="row">
+				<div class="col-xs-2" id="ratting-form-inbox">
+					<form method="POST" action="{% url 'voting' word=message.subforum pk=message.pk direction='up' %}"> {% csrf_token %}
+						{% if message.direction == 'up' %}
+						<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
+						{% else %}
+						<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
+						{% endif %}
+					</form>
+					<form method="POST" action="{% url 'voting' word=message.subforum pk=message.pk direction='down' %}"> {% csrf_token %}
+						{% if message.direction == 'down' %}
+						<input type="image" value="submit" src="{% static "images/DownVoted.png" %}">
+						{% else %}
+						<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+						{% endif %}
+					</form>
+				</div>	
+				<div class="col-xs-10">
+					<p id="message-data">from <a href="{% url 'all_activity' username=message.author %}">{{message.author}}</a> via <a href="{% url 'category' category=message.subforum %}">/r/{{message.subforum}}</a> sent {{message.date|naturaltime}}</p>
+					<p id="body-message"> {{message.body}} </p>
+					<p id="under-message"> <a href="{% url 'detailview' word=message.subforum slug=message.slug %}">full comments ({{message.comments_count}})</a>
+				</div>
+			</div>			
+		
+		{% elif message.topic %}
+		
+			<div class="panel panel-default" id="author-panel">
+				<a href="{% url 'all_activity' username=message.author %}"><b>{{message.author}}</b></a>
+			</div> 
+			<b>{{message.topic}}</b>	
+			<p id="message-data">from <a href="{% url 'all_activity' username=message.author %}">{{message.author}}</a> sent {{message.date|naturaltime}}</p>
+			<p id="body-message"> {{message.body}} </p>
+			<p id="under-message"> <a href="{% url 'pm' user=message.author %}">reply</a>			
+		
+		{% elif message.thread %}
+		
+			<b>post reply</b> <a href="{% url 'detailview' word=message.thread.subforum slug=message.thread.slug %}"><i>{{message.thread}}</i></</a>
+			<div class="row">
+				<div class="col-xs-2" id="ratting-form-inbox">
+					<form method="POST" action="{% url 'voting' word=message.thread.subforum pk=message.pk direction='up' %}"> {% csrf_token %}
+						{% if message.direction == 'up' %}
+						<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
+						{% else %}
+						<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
+						{% endif %}
+					</form>
+					<form method="POST" action="{% url 'voting' word=message.thread.subforum pk=message.pk direction='down' %}"> {% csrf_token %}
+						{% if message.direction == 'down' %}
+						<input type="image" value="submit" src="{% static "images/DownVoted.png" %}">
+						{% else %}
+						<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+						{% endif %}
+					</form>
+				</div>	
+				<div class="col-xs-10">
+					<p id="message-data">from <a href="{% url 'all_activity' username=message.author %}">{{message.author}}</a> via <a href="{% url 'category' category=message.thread.subforum %}">/r/{{message.thread.subforum}}</a> sent {{message.date|naturaltime}}</p>
+					<p id="body-message"> {{message.body}} </p>
+					<p id="under-message"> <a href="{% url 'detailview' word=message.thread.subforum slug=message.thread.slug %}">full comments ({{message.thread.comments_count}})</a>
+				</div>
+			</div>
+			
+		{% else %}
+		
+			<b>comment reply</b> <a href="{% url 'detailview' word=message.main_post.thread.subforum slug=message.main_post.thread.slug %}"><i>{{message.thread}}</i></</a>
+			<div class="row">
+				<div class="col-xs-2" id="ratting-form-inbox">
+					<form method="POST" action="{% url 'voting' word=message.main_post.thread.subforum pk=message.pk direction='up' %}"> {% csrf_token %}
+						{% if message.direction == 'up' %}
+						<input type="image" value="submit" src="{% static "images/UpVoted.png" %}">
+						{% else %}
+						<input type="image" value="submit" src="{% static "images/UpVote.png" %}">
+						{% endif %}
+					</form>
+					<form method="POST" action="{% url 'voting' word=message.main_post.thread.subforum pk=message.pk direction='down' %}"> {% csrf_token %}
+						{% if message.direction == 'down' %}
+						<input type="image" value="submit" src="{% static "images/DownVoted.png" %}">
+						{% else %}
+						<input type="image" value="submit" src="{% static "images/DownVote.png" %}">
+						{% endif %}
+					</form>
+				</div>	
+				<div class="col-xs-10">
+					<p id="message-data">from <a href="{% url 'all_activity' username=message.author %}">{{message.author}}</a> via <a href="{% url 'category' category=message.main_post.thread.subforum %}">/r/{{message.thread.subforum}}</a> sent {{message.date|naturaltime}}</p>
+					<p id="body-message"> {{message.body}} </p>
+					<p id="under-message"> <a href="{% url 'detailview' word=message.main_post.thread.subforum slug=message.main_post.thread.slug %}">full comments ({{message.thread.comments_count}})</a>
+				</div>
+			</div>
+
+		{% endif %}
+	</div>			
+</div>
+
+{% endfor %}
+{% endblock %}

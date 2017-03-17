@@ -1,0 +1,23 @@
+{% extends "message/inbox_base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Messages sent</title>
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+{% for message in Messages %}
+<div class="row" id="sent-row">	
+	<div class="col-sm-9">
+			sent to {{message.receipent}}
+			<div class="panel panel-default" id="author-panel-sent">
+				<a href="{% url 'all_activity' username=message.author %}"><b>{{message.author}}</b></a>
+			</div> 
+			<b>{{message.topic}}</b>	
+			<p id="sent-message-body"> {{message.body}} </p>	
+	</div>			
+</div>
+
+{% endfor %}
+{% endblock %}

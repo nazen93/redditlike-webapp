@@ -1,0 +1,26 @@
+{% extends "message/inbox_base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Mentiones</title>
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+		<ul class="nav nav-tabs" role="tablist" id="inbox-tabs"">
+				<li><a href="{% url 'inbox' %}">all</a></li>
+				<li><a href="{% url 'messages' %}">messages</a></li>
+				<li><a href="{% url 'post_replies' %}">post replies</a>		
+				<li class="active"><a href="{% url 'mentions' %}">mentions</a></li>				
+    	</ul>
+{% for mention in Mentions %}
+<div class="row">	
+	<div class="col-sm-9" id="post">
+			<a id="post-title" href="{{mention.thread}}">{{message.thread}}</a>
+			<p> {{mention.body}} </p>
+			<p id="postlist-date"> dodane {{mention.date|naturaltime}} przez <a href="{% url 'all_activity' username=mention.author %}">{{mention.author}}</a>
+	</div>			
+</div>
+
+{% endfor %}
+{% endblock %}

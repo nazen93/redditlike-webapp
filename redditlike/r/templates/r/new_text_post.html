@@ -1,0 +1,50 @@
+{% extends 'r/index.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-lg-5 col-md-7 col-sm-8 col-xs-12" id="add-post-form">
+			<ul class="nav nav-tabs" role="tablist" id="addpost-nav-tabs">
+				<li role="presentation" class="active"><a href="#link-post" aria-controls="link-post" role="tab" data-toggle="tab">link</a></li>
+    			<li role="presentation"><a href="#text-post" aria-controls="text-post" role="tab" data-toggle="tab">text</a></li>
+    		</ul>
+    		<div class="tab-content">
+    			<div role="tabpanel" class="tab-pane active" id="link-post">	
+		            <form id="new-post"  method="post" enctype="multipart/form-data" action="{% url 'new_link_post' %}">
+		                	{% csrf_token %}
+		 					{% for field in link_post_form %}
+	 							<div class="panel panel-default">
+									<div class="panel-body" id="panel-body">
+										<div id="add-post-label">
+											{{field.label}}
+										</div>
+	 									<p>{{field}}</p>
+	 								</div>
+	 							</div>
+	 					{% endfor %}
+	                    <input type="submit" class="btn btn-default" value="Save" </input>
+	                </form>
+                </div>
+      			<div role="tabpanel" class="tab-pane" id="text-post">	             
+      				<div role="tabpanel" class="tab-pane" id="home">	
+		            <form id="new-post"  method="post" enctype="multipart/form-data">
+		                	{% csrf_token %}
+		 					{% for field in text_post_form %}
+	 							<div class="panel panel-default">
+									<div class="panel-body" id="panel-body">
+										<div id="add-post-label">
+											{{field.label}}
+										</div>
+	 									<p>{{field}}</p>
+	 								</div>
+	 							</div>
+	 					{% endfor %}
+	                    <input type="submit" class="btn btn-default" value="Save" </input>
+	                </form>
+                </div>
+        		</div>        
+			</div>	
+		</div>
+	</div>
+
+{% endblock %}

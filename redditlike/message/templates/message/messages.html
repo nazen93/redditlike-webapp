@@ -1,0 +1,30 @@
+{% extends "message/inbox_base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Private messages</title>
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+		<ul class="nav nav-tabs" role="tablist" id="inbox-tabs">
+				<li><a href="{% url 'inbox' %}">all</a></li>
+				<li class="active"><a href="{% url 'messages' %}">messages</a></li>
+				<li><a href="{% url 'post_replies' %}">post replies</a>		
+				<li><a href="{% url 'mentions' %}">mentions</a></li>				
+    	</ul>
+{% for message in Messages %}
+<div class="row">	
+	<div class="col-sm-9" id="messages-column">
+			<div class="panel panel-default" id="author-panel">
+				<b>{{message.author}}</b>
+			</div> 
+			<b>{{message.topic}}</b>	
+			<p id="message-data">from <a href="{% url 'all_activity' username=message.author %}">{{message.author}}</a> sent {{message.date|naturaltime}}</p>
+			<p id="body-message"> {{message.body}} </p>
+			<p id="under-message"> <a href="{% url 'pm' user=message.author %}">reply</a>		
+	</div>			
+</div>
+
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'r/index.html' %}
+{% load crispy_forms_tags %}
+{% block navbar_tabs %}
+	{% block nested_navbar_tabs %}
+		<li><a href="{% url 'all_activity' username=current_user %}">overview</a></li>
+		<li><a href="{% url 'user_comments' username=current_user %}">comments</a></li>
+		<li><a href="{% url 'user_threads' username=current_user %}">submitted</a></li>
+	{% endblock %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}

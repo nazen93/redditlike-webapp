@@ -1,0 +1,31 @@
+{% extends 'r/index.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+<title>reddit: register a new account</title>
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-md-5 col-md-offset-1 col-sm-6 col-xs-6" id="register-page-form">	     
+		<h5><b>CREATE A NEW ACCOUNT</b></h5>           				
+	    	<form method="POST" action="{% url 'register' %}">{% csrf_token %}
+				{{register_form|crispy}}
+				<div class="text-center">
+					<button type="submit" id="modal-button" class="btn btn-primary">Register</button>	   
+				</div>             				
+	        </form>
+		</div>	
+	    <div class="col-md-5 col-sm-6 col-xs-6" id="login-page-form">
+	   		<h5><b>LOG IN</b></h5>    
+			<form method="POST" action="{% url 'login' %}">{% csrf_token %}
+				{{form|crispy}}
+					<div class="text-center">
+						<button type="submit" id="modal-button" class="btn btn-primary">Log in</button>
+					    <input type="hidden" name="next" value="{{  request.GET.next }}" />
+				    </div>
+		    </form>  
+	    </div>
+	</div>    
+
+{% endblock %}

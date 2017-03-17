@@ -1,0 +1,35 @@
+{% extends 'message/inbox_base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+<title>Send a message</title>
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-lg-5 col-md-7 col-sm-9 col-xs-12">		
+			<div id="text-above-form">
+			send a private message
+			</div>		
+		 	<form id="new-post"  method="post" enctype="multipart/form-data" action="{% url 'compose' %}">
+		    	{% csrf_token %}
+		 		{% for field in form %}
+	 			<div class="panel panel-default">
+					<div class="panel-body" id="panel-body">
+						<div id="add-post-label">
+							{{field.label}}
+						</div>
+	 					<p>{{field}}</p>
+	 					{% for error in field.errors %}
+	 					<div id="error">
+	 					{{error}}
+	 					</div>
+						{% endfor %}
+	 				</div>
+	 			</div>
+	 			{% endfor %}
+	            <input type="submit" class="btn btn-default" value="send" </input>
+	       </form>
+        </div>      
+	</div>	
+{% endblock %}
