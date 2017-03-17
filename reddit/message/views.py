@@ -7,7 +7,7 @@ from django.views.generic import TemplateView, ListView, CreateView
 
 from r.extra import VotedUpDown
 from r.mixins import LoginRequiredMixin, GetAuthorMixin
-from r.models import PostText, Comments
+from r.models import PostText, Comments, CommentReplies
 from .forms import PrivateMessageForm
 from .models import PrivateMessage
 
@@ -15,30 +15,36 @@ from itertools import chain
 
 # Create your views here.
 
-class Inbox(VotedUpDown, LoginRequiredMixin, TemplateView):
+class Inbox(VotedUpDown, LoginRequiredMixin, ListView):
+    model = PostText
     template_name = 'message/inbox.html'
+    paginate_by = 20
+    context_object_name = 'inbox'
     
-    def get_context_data(self, *args, **kwargs):
-        context = super(Inbox, self).get_context_data(*args, **kwargs)
+    def get_queryset(self, **kwargs):
         user = self.request.user
         messages_query = PrivateMessage.objects.filter(recipient=user)
-        comment_query = Comments.objects.filter(thread__author=user)
-        post_query = PostText.objects.filter(author=user)
-        combined_query = list(chain(messages_query, post_query, comment_query))
+        post_reply_query = Comments.objects.filter(thread__author=user).exclude(author=user)
+        comment_reply_query = CommentReplies.objects.filter(main_post__author=user).exclude(author=user)
+        messages_query.update(has_read=True) #updates the unread messages(has_read) to True
+        post_reply_query.update(has_read=True) #updates the unread post replies(has_read) to True
+        comment_reply_query.update(has_read=True) #updates the unread comment replies (has_read) to True
+        combined_query = list(chain(messages_query, post_reply_query, comment_reply_query)) #combines the querysets
         updated_queryset = self.up_or_down(combined_query)
-        updated_queryset.sort(key=lambda i:i.date, reverse=True)
-        context['inbox'] = updated_queryset
-        return context
-    
-        
+        updated_queryset.sort(key=lambda i:i.date, reverse=True) #sorts the combined queryset by date
+        return updated_queryset 
+
+            
 class Messages(LoginRequiredMixin, ListView):
     model = PrivateMessage
     template_name = "message/messages.html"
     context_object_name = 'Messages'
+    paginate_by = 10
     
     def get_queryset(self):
         user = self.request.user
         return PrivateMessage.objects.filter(recipient=user).order_by('-date')
+    
     
 class Sent(Messages):
     template_name = "message/sent.html"
@@ -52,7 +58,7 @@ class PostReplies(VotedUpDown, Messages):
     
     def get_queryset(self):
         user = self.request.user
-        queryset = Comments.objects.filter(thread__author=user).order_by('-date')
+        queryset = Comments.objects.filter(thread__author=user).exclude(author=user).order_by('-date')
         updated_queryset = self.up_or_down(queryset)
         return updated_queryset
     
@@ -69,6 +75,7 @@ class Mentions(LoginRequiredMixin, ListView):
         combined_query = list(chain(post_query, comment_query))
         combined_query.sort(key=lambda i:i.date, reverse=True)
         return combined_query
+    
     
     
 class SendPM(LoginRequiredMixin, GetAuthorMixin, CreateView):    

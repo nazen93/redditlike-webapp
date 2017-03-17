@@ -10,7 +10,7 @@
 		<div class="col-md-5 col-md-offset-1 col-sm-6 col-xs-6" id="register-page-form">	     
 		<h5><b>CREATE A NEW ACCOUNT</b></h5>           				
 	    	<form method="POST" action="{% url 'register' %}">{% csrf_token %}
-				{{register_form|crispy}}
+				{{form|crispy}}
 				<div class="text-center">
 					<button type="submit" id="modal-button" class="btn btn-primary">Register</button>	   
 				</div>             				

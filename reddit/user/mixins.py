@@ -1,7 +1,9 @@
 from .models import ThreadKarmaPoints, CommentKarmaPoints
 
-class UserDataMixin:
-    
+class UserDataMixin:    
+    '''
+    Adds currently logged in user to the context, as well as thread karma and comment karma.
+    '''
     def get_context_data(self, *args, **kwargs):
         context = super(UserDataMixin, self).get_context_data(*args, **kwargs)
         current_user = self.kwargs['username']

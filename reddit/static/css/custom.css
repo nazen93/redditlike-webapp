@@ -48,7 +48,6 @@
 	
 }
 
-
 #top-tabs > li > a{
     padding-bottom: 0.5px;
     padding-top: 0.5px;
@@ -208,7 +207,7 @@
 	}
 
 #ratting-form > p {
-	margin-left: 4px;
+	margin-right: 4px;
 	margin-bottom: 3px;
 }
 
@@ -595,7 +594,7 @@
 #large-navbar > .nav-tabs {
 	position: absolute;
 	bottom: 0;
-	margin-left: 50px;
+	left: 150px;
 }
 
 #large-navbar > .nav-tabs > li{

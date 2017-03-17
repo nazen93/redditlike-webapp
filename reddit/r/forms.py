@@ -15,14 +15,14 @@ class TextPost(forms.ModelForm):
     
     class Meta:
         model = PostText
-        fields = ['title', 'body', 'subreddit']
+        fields = ['title', 'body', 'subforum']
     
 
 class LinkPost(forms.ModelForm):
     
     class Meta:
         model = PostText
-        fields = ['link', 'image', 'title', 'subreddit']
+        fields = ['link', 'image', 'title', 'subforum']
     
 class SignUpForm(forms.ModelForm):
     password2 = forms.CharField(label='', widget=forms.PasswordInput(attrs={
@@ -58,7 +58,17 @@ class SignUpForm(forms.ModelForm):
                 'placeholder': 'email',
         }),
             } 
+
+    def clean(self):
+        cleaned_data = super(SignUpForm, self).clean()
+        password1 = cleaned_data.get('password')
+        password2 = cleaned_data.get('password2')
         
+        if password1 != password2:
+            self.add_error('password2', 'The password does not match the first one.')
+        
+        return cleaned_data
+
 
 class VotingForm(forms.Form):
     Vote = forms.BooleanField(required=False)

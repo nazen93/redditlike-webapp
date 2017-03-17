@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
     {% block title %}
     {% endblock %}
-    <title>reddit</title>
+    <title>Projectorino</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- Bootstrap CSS theme -->
@@ -22,20 +22,20 @@
         <div class="navbar-header">
             <ul class="nav nav-pills" id="top-tabs">
             	<li class="dropdown">
-            	  <a href="" class="dropdown-toggle" id="my-subreddits" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-				    My subreddits
+            	  <a href="" class="dropdown-toggle" id="my-subforums" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				    My subforums
 				    <span class="caret"></span>
 				  </a>
-				  <ul class="dropdown-menu" aria-labelledby="my-subreddits">
-				    <li><a href="#">Action</a></li>
-				    <li><a href="#">Another action</a></li>
-				    <li><a href="#">Something else here</a></li>
-				    <li><a href="#">Separated link</a></li>
+				  <ul class="dropdown-menu" aria-labelledby="my-subforums">
+				  {% if user.is_authenticated %}
+				  	{% for category in subscribed.all %}
+				  		<li><a href="{% url 'category' category=category %}">{{category}}</a></li>
+				  	{% endfor %}
+				  {% endif %}
 				  </ul>
             	</li>
-                <li class="active"><a href="#">Front</a></li>
-                <li><a href="#">All</a></li>
-                <li><a href="#">Random</a></li>
+                <li><a href="{% url 'index' %}">All</a></li>
+                <li><a href="{% url 'random' %}">Random</a></li>
             </ul>
         </div>
     </div>
@@ -44,7 +44,7 @@
 <nav class="navbar sub-navbar hidden-xs" id="lower-navbar">
 	<div class="container-fluid">
 		<div class="navbar-header" id="large-navbar">
-		<a class="navbar-brand" href="{% url 'index' %}">reddit</a>
+		<a class="navbar-brand" href="{% url 'index' %}">Projectorino</a>
 			<ul class="nav nav-tabs">
 			      	 {% block navbar_tabs %}
 			         {% endblock %}
@@ -54,7 +54,7 @@
                 <li><a id="logged-in-panel" data-toggle="modal" href="#modal-1">Want to join? Log in or sign up in seconds.</a></li>
                 {% else %}
 	                <div id="logged-in-panel">
-	                	<li><a href="{% url 'all_activity' username=user.get_username %}">{{user.get_username}}</a> | <a class="glyphicon glyphicon-envelope" href="{% url 'inbox' %}"></a> | <a href="">settings</a> | <a href="{% url 'logout' %}">logout</a></li>
+	                	<li><a href="{% url 'all_activity' username=user.get_username %}">{{user.get_username}} </a> | <a class="glyphicon glyphicon-envelope" href="{% url 'inbox' %}">{% if unread > 0  %}({{unread}}){% endif %}</a> | <a href="">settings</a> | <a href="{% url 'logout' %}">logout</a></li>
 	     			</div>
      			{% endif %}
       		</ul>
@@ -191,6 +191,26 @@
 					</div>
 				</div>
 			</div> 
+	        {% endif %}
+	        <!-- Subsribe form -->
+	        {% if user.is_authenticated %}
+		        {% if subforum %}
+			        <div class="row">
+				        <div class="col-sm-12"> 
+				        	{% if already_subscribed %}
+				        	<form method='POST' action="{% url 'subscribe' category=subforum action='unsubscribe' %}">{% csrf_token %}
+					        	<button class="btn-danger" type="submit">unsubscribe</button>
+					        </form>	
+					       {{number_of_subscribers}} people have already subscribed!      	
+				        	{% else %}				        	
+					        <form method='POST' action="{% url 'subscribe' category=subforum action='subscribe' %}">{% csrf_token %}
+					        	<button class="btn-info" type="submit">subscribe</button>
+					        </form>
+					         {{number_of_subscribers}} people have already subscribed!     
+					        {% endif %}
+				        </div>
+			        </div>
+		        {% endif %}
 	        {% endif %}
 	        <!-- New post -->
 		    <div class="row">

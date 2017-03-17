@@ -16,16 +16,16 @@ class PrivateMessageForm(forms.ModelForm):
         self.fields['body'].widget.attrs['rows'] = 10
     
     def clean_recipient(self):
-        recipient = self.cleaned_data.get('recipient')
+        recipient = self.cleaned_data.get('recipient.')
         current_user = self.user.username
     
         if recipient == current_user:
-            raise forms.ValidationError("You can't send a messeage to youself")
+            raise forms.ValidationError("You can't send a messeage to youself.")
         
         elif not User.objects.filter(username=recipient).exists():
             raise forms.ValidationError('User %s does not exist' % recipient)
         
         elif recipient == None or recipient == "":
-            raise forms.ValidationError('enter a username')
+            raise forms.ValidationError('Enter a username.')
                              
         return recipient

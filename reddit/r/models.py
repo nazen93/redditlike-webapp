@@ -13,7 +13,6 @@ from io import StringIO, BytesIO
 import io
 from PIL import Image
 from random import randrange
-from _sqlite3 import IntegrityError
 
 # Create your models here.
 
@@ -33,36 +32,39 @@ class PostText(ImgurThumbnail, models.Model):
     date = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
     is_promoted = models.BooleanField(default=False)
+    has_read = models.BooleanField(default=False)
     up_votes = models.IntegerField(default=0, editable=False)
     down_votes = models.IntegerField(default=0, editable=False)
     rating = models.IntegerField(default=0, editable=False)
     author = models.ForeignKey(User, null=True, editable=False)
     comments_count = models.IntegerField(default=0, editable=False)
-    subreddit = models.ForeignKey(SubForum)        
+    subforum = models.ForeignKey(SubForum)        
 
     def save(self, *args, **kwargs):
         if not self.id:
             self.slug = slugify(self.title)
-            slug_counter = PostText.objects.filter(slug__startswith=self.slug, slug__endswith=self.slug).count()
-            if slug_counter != 0:
-                self.slug = '%s-%s' % (self.slug, str(slug_counter))
-                
-                                       
+            slug_counter = PostText.objects.filter(slug__istartswith=self.slug).count() #checks how many threads start with the same slug
+            if slug_counter != 0: #if slug name is not unique
+                self.slug = '%s-%s' % (self.slug, str(slug_counter)) #new slug is created consisting the original slug and the slug counter
+                                                     
         if self.image:  
-            self.body = self.thumbnail_file((255,255))
-            self.image.file = self.thumbnail_file((55,55))
+            self.body = self.thumbnail_file((255,255)) #creates a body image from a file that was uploaded
+            self.image.file = self.thumbnail_file((55,55)) #creates a thumbnail from the file that was uploaded
             
-        if self.link and 'imgur' in self.link:
-            picture_path = self.download_thumbnail(self.link)
-            fullsize_picture_path = self.imgur_thumbnail(self.link)            
-            self.body = self.imgur_image_large(fullsize_picture_path)
-            self.image = picture_path
+        if self.link and 'imgur' in self.link: #checks if the provided url contains imgur 
+            picture_path = self.download_thumbnail(self.link) #creates a thumbnail from the link that was provided
+            fullsize_picture_path = self.imgur_thumbnail(self.link) #receives a direct link to the image
+            self.body = self.imgur_image_large(fullsize_picture_path) #sets large imgur thumbnail as body content of the post
+            self.image = picture_path #sets resized image as a thumbnail
             
         super(PostText, self).save(*args, **kwargs)
                  
     def __str__(self):
         return self.title
-    
+
+    class Meta:
+        verbose_name = 'Thread'
+        verbose_name_plural = 'Threads'    
 
 class Comments(models.Model):
     thread = models.ForeignKey(PostText, related_name='comments')
@@ -73,10 +75,15 @@ class Comments(models.Model):
     voted = models.ForeignKey('Voter', null=True)
     up_votes = models.IntegerField(default=0, editable=False)
     down_votes = models.IntegerField(default=0, editable=False)
+    has_read = models.BooleanField(default=False)
     default_instance = models.IntegerField(default=0)
 
     def __str__(self):
         return self.body
+
+    class Meta:
+        verbose_name = 'Comment'
+        verbose_name_plural = 'Comments'   
 
 class CommentReplies(models.Model):
     main_post = models.ForeignKey(Comments, null=True)
@@ -87,18 +94,23 @@ class CommentReplies(models.Model):
     rating = models.IntegerField(default=0, editable=False)
     up_votes = models.IntegerField(default=0, editable=False)
     down_votes = models.IntegerField(default=0, editable=False)
+    has_read = models.BooleanField(default=False)
     instance = models.IntegerField(default=0, editable=False)
     
     def __str__(self):
         return self.body
- 
+
+    class Meta:
+        verbose_name = 'Comment reply'
+        verbose_name_plural = 'Comment replies'    
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    posts = models.ForeignKey(PostText, null=True)    
+    posts = models.ForeignKey(PostText, null=True)
+    subscirbed = models.ManyToManyField(SubForum, blank=True, related_name='subscription_list')    
     
     def __str__(self):
-        return str(self.user)
+        return self.user.username
 
     
 class Voter(models.Model):
@@ -107,7 +119,7 @@ class Voter(models.Model):
     voting_direction = models.CharField(max_length=10, null=True)
     
     def __str__(self):
-        return str(self.voting_direction)
+        return self.voting_direction
    
     
 def create_user_profile(sender, instance, created, **kwargs):
