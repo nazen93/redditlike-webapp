@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db.models import Q, F, Value
 from django.db.models.functions import Concat
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.urls import reverse_lazy, reverse
 from django.utils.http import is_safe_url
@@ -211,12 +211,19 @@ class PostView(UnreadCountMixin, VotedUpDown, VotingClass, PreviousPageMixin, Mu
         return context
 
 
-class PostUpdate(NewPostSuccessURLMixin, UpdateView):
+class PostUpdate(UpdateView):
     model = PostText
     fields = ['body']
     template_name = "r/update.html"
-
-
+	
+    def dispatch(self, request, *args, **kwargs):
+        current_user = self.request.user
+        object = self.get_object()
+        if str(current_user) != 'AnonymousUser' and current_user == object.author:
+            return super(PostUpdate, self).dispatch(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+		
 class CommentUpdate(PostUpdate):
     model = Comments
     

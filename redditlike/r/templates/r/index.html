@@ -200,14 +200,19 @@
 				        	{% if already_subscribed %}
 				        	<form method='POST' action="{% url 'subscribe' category=subforum action='unsubscribe' %}">{% csrf_token %}
 					        	<button class="btn-danger" type="submit">unsubscribe</button>
-					        </form>	
-					       {{number_of_subscribers}} people have already subscribed!      	
-				        	{% else %}				        	
+					        </form>		
+					        {% else %}        	
 					        <form method='POST' action="{% url 'subscribe' category=subforum action='subscribe' %}">{% csrf_token %}
 					        	<button class="btn-info" type="submit">subscribe</button>
-					        </form>
-					         {{number_of_subscribers}} people have already subscribed!     
+					        </form>  
 					        {% endif %}
+					       {% if number_of_subscribers == 0 %}
+ 								No one is subscribing to this subforum yet, be the first one!
+					       {% elif number_of_subscribers == 1 %}
+					       		Just {{number_of_subscribers}} person has subscribed.
+				           {% else %}		
+				               {{number_of_subscribers}} people have already subscribed!     
+				           {% endif %}	
 				        </div>
 			        </div>
 		        {% endif %}
@@ -248,40 +253,26 @@
 	</div>
     {% endif %}
 <!-- Footer -->
-<div id="footer">
-    <div class="container" id="footer">
-        <div class="row">
+    <div class="container-fluid text-center" id="footer">
+        <div class="row" id="footer-row">
             <ul>
                 <li><b>about</b></li>
                 <li><a href="#">blog</a></li>
-                <li><a href="#">source code</a></li>
                 <li><a href="#">advertise</a></li>
-                <li><a href="#">jobs</a></li>
             </ul>
             <ul>
                 <li><b>help</b></li>
                 <li><a href="#">site rules</a></li>
                 <li><a href="#">FAQ</a></li>
-                <li><a href="#">wiki</a></li>
-                <li><a href="#">reddiquette</a></li>
-                <li><a href="#">transparency</a></li>
                 <li><a href="#">contact us</a></li>
             </ul>
             <ul>
                 <li><b>apps & tools</b></li>
-                <li><a href="#">Reddit for iPhone</a></li>
-                <li><a href="#">Reddit for Android</a></li>
                 <li><a href="#">mobile website</a></li>
                 <li><a href="#">buttons</a></li>
             </ul>
-            <ul>
-                <li><b><3</b></li>
-                <li><a href="#">reddit gold</a></li>
-                <li><a href="#">redditgifts</a></li>
-            </ul>
         </div>
     </div>
-</div>
 
 <!-- Simpiled and minified JavaScript -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -294,3 +285,4 @@
 <script>
 
 </script>
+</html>
