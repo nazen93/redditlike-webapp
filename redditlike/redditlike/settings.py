@@ -23,7 +23,7 @@ LOGIN_URL = '/r/register/'
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '65%)ppi5gjt-+7qkw3q2mn1j2#8y^p43zjiyuq-xw^f0+c&!ia'
+SECRET_KEY = #####
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
